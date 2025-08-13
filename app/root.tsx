@@ -11,6 +11,9 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { Toaster } from "sonner";
 import { QueryProvider } from "./providers/QueryProviders";
+import { useEffect } from "react";
+import { initializeAxiosAuth } from "./lib/axios";
+import { useAuthStore } from "./stores/authStore";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,6 +59,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  // Initialize axios with auth store reference on client side only
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      initializeAxiosAuth(useAuthStore);
+    }
+  }, []);
   return (
     <QueryProvider>
       <Outlet />

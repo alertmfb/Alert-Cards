@@ -1,10 +1,15 @@
 import { axiosInstance } from "~/lib/axios";
 import type {
+  AcceptInviteRequest,
+  AcceptInviteResponse,
+  InviteRequest,
+  InviteResponse,
   LoginRequest,
   LoginResponse,
   LogoutRequest,
   LogoutResponse,
   ProfileResponse,
+  RolesResponse,
 } from "~/types/auth";
 
 export const authApi = {
@@ -14,7 +19,6 @@ export const authApi = {
         "/auth/sign-in",
         data
       );
-      // Make sure we're returning the actual data, not the response object
       return response.data;
     } catch (error) {
       console.error("Login API error:", error);
@@ -28,7 +32,6 @@ export const authApi = {
         "/auth/sign-out",
         data
       );
-      // Make sure we're returning the actual data, not the response object
       return response.data;
     } catch (error) {
       console.error("Logout API error:", error);
@@ -41,10 +44,48 @@ export const authApi = {
       const response = await axiosInstance.get<ProfileResponse>(
         "/auth/profile"
       );
-      // Make sure we're returning the actual data, not the response object
       return response.data;
     } catch (error) {
       console.error("Profile API error:", error);
+      throw error;
+    }
+  },
+
+  invite: async (data: InviteRequest): Promise<InviteResponse> => {
+    try {
+      const response = await axiosInstance.post<InviteResponse>(
+        "/auth/invite",
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Invite API error:", error);
+      throw error;
+    }
+  },
+
+  acceptInvite: async (
+    inviteId: string,
+    data: AcceptInviteRequest
+  ): Promise<AcceptInviteResponse> => {
+    try {
+      const response = await axiosInstance.post<AcceptInviteResponse>(
+        `/auth/invite/${inviteId}`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Accept invite API error:", error);
+      throw error;
+    }
+  },
+
+  getRoles: async (): Promise<RolesResponse> => {
+    try {
+      const response = await axiosInstance.get<RolesResponse>("/auth/roles");
+      return response.data;
+    } catch (error) {
+      console.error("Get roles API error:", error);
       throw error;
     }
   },

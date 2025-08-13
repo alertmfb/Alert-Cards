@@ -1,11 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "components/ui/checkbox";
-import type { UserAdminType } from "~/index";
+import type { ServerUser, UserAdminType } from "~/index";
 import { cn } from "~/lib/utils";
 import { formatDateTime, getBranchLabel } from "~/utils";
 import { AdminActionMenu } from "./AdminActionMenu";
 
-export const adminColumns: ColumnDef<UserAdminType>[] = [
+export const adminColumns: ColumnDef<ServerUser>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -26,23 +26,25 @@ export const adminColumns: ColumnDef<UserAdminType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorFn: (row) => `${row.firstName} ${row.lastName}`.trim(),
+    id: "name",
     header: "Name",
     cell: ({ row }) => {
-      const name = row.original.name;
-      const initials = name
+      const fullName: string = row.getValue("name");
+      const initials = fullName
         .split(" ")
-        .map((n) => n[0])
+        .filter(Boolean) // Remove empty strings
+        .map((n) => n[0]?.toUpperCase())
+        .filter(Boolean) // Remove undefined values
         .join("")
-        .toUpperCase()
         .slice(0, 2);
 
       return (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-800 flex items-center justify-center text-sm font-medium">
-            {initials}
+            {initials || "??"}
           </div>
-          <span>{name}</span>
+          <span className="font-medium">{fullName}</span>
         </div>
       );
     },
@@ -50,51 +52,82 @@ export const adminColumns: ColumnDef<UserAdminType>[] = [
   {
     accessorKey: "email",
     header: "Email Address",
+    cell: ({ row }) => (
+      <span className="text-gray-600">{row.original.email}</span>
+    ),
   },
   {
     accessorKey: "branch",
     header: "Branch",
     cell: ({ row }) => {
       const branch = row.original.branch;
-      return <span>{getBranchLabel(branch)}</span>;
+      const branchName = branch?.name;
+
+      if (!branchName) {
+        return <span className="text-gray-400 italic">No branch assigned</span>;
+      }
+
+      return (
+        <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-sm">
+          {getBranchLabel(branchName)}
+        </span>
+      );
     },
   },
   {
     accessorKey: "role",
     header: "Role",
+    cell: ({ row }) => (
+      <span className="px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-sm font-medium">
+        {row.original.role}
+      </span>
+    ),
   },
   {
-    accessorKey: "status",
+    id: "status",
     header: "Status",
+    accessorFn: (row) => (row.isActive ? "Active" : "Inactive"),
     cell: ({ row }) => {
-      const status = row.original.status;
+      const status = row.getValue<string>("status");
+      const isActive = status === "Active";
 
-      const statusClasses = cn(
-        "px-3 py-1 rounded-full text-sm font-medium border",
-        status === "Active"
+      const classes = cn(
+        "px-3 py-1 rounded-full text-sm font-medium border inline-flex items-center gap-1",
+        isActive
           ? "bg-green-50 text-green-700 border-green-200"
           : "bg-gray-100 text-gray-700 border-gray-200"
       );
 
-      return <span className={statusClasses}>{status}</span>;
+      return (
+        <span className={classes}>
+          <div
+            className={cn(
+              "w-2 h-2 rounded-full",
+              isActive ? "bg-green-500" : "bg-gray-400"
+            )}
+          />
+          {status}
+        </span>
+      );
     },
   },
   {
     accessorKey: "createdAt",
-    header: "Date",
+    header: "Date Created",
     cell: ({ row }) => {
       const { date, time } = formatDateTime(row.original.createdAt);
       return (
-        <div>
-          <div>{date}</div>
-          <div className="text-xs text-red-600">{time}</div>
+        <div className="text-sm">
+          <div className="font-medium">{date}</div>
+          <div className="text-gray-500">{time}</div>
         </div>
       );
     },
   },
   {
-    accessorKey: "action",
-    header: "Action",
+    id: "action",
+    header: "Actions",
     cell: ({ row }) => <AdminActionMenu admin={row.original} />,
+    enableSorting: false,
   },
 ];

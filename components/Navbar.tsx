@@ -1,9 +1,9 @@
+// components/Navbar.tsx (Updated)
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router";
-
-import { SidebarTrigger } from "./ui/sidebar";
-
+import { ChevronDown } from "lucide-react";
+import { SidebarTrigger } from "components/ui/sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,8 +11,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "./ui/breadcrumb";
-
+} from "components/ui/breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,15 +19,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { ChevronDown } from "lucide-react";
-
-import { toast } from "sonner";
-import { useUserRolesStore } from "~/stores/useUserRolesStore";
-import NotificationBell from "./shared/NotificationBell";
+} from "components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "components/ui/avatar";
 import { useAuth } from "~/hooks/useAuth";
+import { useUserRolesStore } from "~/stores/useUserRolesStore";
+import NotificationBell from "components/shared/NotificationBell";
 
 const formatBreadcrumbText = (str: string) => {
   if (typeof str !== "string") return "Invalid";
@@ -38,20 +33,14 @@ const formatBreadcrumbText = (str: string) => {
     .join(" ");
 };
 
-const Navbar = () => {
+export default function Navbar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { userRole, setUserRole } = useUserRolesStore();
-  const auth = useAuth();
-
-  // Debug logging
-  console.log("Auth object:", auth);
-  console.log("Auth user:", auth.user);
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    if (auth.logout) {
-      auth.logout();
-    }
+    logout();
   };
 
   const segments = pathname.split("/").filter((seg) => seg !== "");
@@ -86,50 +75,15 @@ const Navbar = () => {
     });
   };
 
-  // Safely extract user data with extensive validation
-  const getUserData = () => {
-    if (!auth || !auth.user) {
-      return {
-        name: "User",
-        email: "user@example.com",
-        avatar: "",
-      };
-    }
-
-    const user = auth.user;
-
-    // Validate that user is an object and not a Response or other problematic object
-    if (typeof user !== "object" || user === null) {
-      console.error("Invalid user object:", user);
-      return {
-        name: "User",
-        email: "user@example.com",
-        avatar: "",
-      };
-    }
-
-    // Check if user has a constructor that might indicate it's a Response object
-    if (user.constructor && user.constructor.name === "Response") {
-      console.error("User is a Response object, not user data:", user);
-      return {
-        name: "User",
-        email: "user@example.com",
-        avatar: "",
-      };
-    }
-
-    return {
-      name: typeof user.name === "string" ? user.name : "User",
-      email: typeof user.email === "string" ? user.email : "user@example.com",
-      avatar: typeof user.avatar === "string" ? user.avatar : "",
-    };
+  // Safely get user data with fallbacks
+  const userData = {
+    name: user?.name || "User",
+    email: user?.email || "user@example.com",
+    avatar: user?.avatar || "",
   };
-
-  const userData = getUserData();
 
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between px-4 shadow-md backdrop-blur-md backdrop-saturate-150 border-b border-border">
-      {/* Left: Sidebar + Breadcrumb */}
       <div className="flex items-center gap-2 md:gap-4 overflow-x-auto">
         <SidebarTrigger className="-ml-1" />
         <Breadcrumb className="max-w-full">
@@ -139,7 +93,6 @@ const Navbar = () => {
         </Breadcrumb>
       </div>
 
-      {/* Right: Notification + Theme + Avatar */}
       <div className="flex items-center gap-2 md:gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -172,7 +125,7 @@ const Navbar = () => {
               </Avatar>
               <div className="hidden md:flex flex-col text-sm max-w-[120px] truncate">
                 <span className="font-medium truncate">{userData.name}</span>
-                <span className="text-xs text-muted-foreground truncate">
+                <span className="text-xs text-muted-foremaker truncate">
                   {userData.email}
                 </span>
               </div>
@@ -192,6 +145,4 @@ const Navbar = () => {
       </div>
     </header>
   );
-};
-
-export default Navbar;
+}

@@ -14,23 +14,45 @@ import { Label } from "~/components/ui/label";
 import { adminColumns } from "./columns";
 import { adminTableData } from "~/constants/data";
 import { AddTeamMemberDialog } from "./AddTeamMemberDialog";
+import { useRoleStore } from "~/stores/roleStore";
+import { createRoleOptions } from "~/lib/utils/roleOptions";
+import type { RoleType } from "~/index";
+import { useRolesQuery } from "~/api/queries/auth";
+import { useUsersQuery } from "~/api/queries/users";
 
 const AdminTable = () => {
+  /* ── local state ─────────────────────────── */
   const [search, setSearch] = React.useState("");
-  const [role, setRole] = React.useState("All");
+  const [role, setRole] = React.useState<RoleType | "All">("All");
   const [status, setStatus] = React.useState("All");
+  const { data: users = [], isLoading: usersLoading } = useUsersQuery();
 
-  const filteredData = adminTableData.filter((item) => {
-    const matchesSearch = `${item.name} ${item.email}`
-      .toLowerCase()
-      .includes(search.toLowerCase());
+  /* ── roles: fetch + store ────────────────── */
+  const { isLoading: rolesLoading } = useRolesQuery(); // triggers fetch / cache
+  const roles = useRoleStore((s) => s.roles); // always use store
 
-    const matchesRole = role === "All" || item.role === role;
-    const matchesStatus = status === "All" || item.status === status;
+  /* Create <Select> options once roles are available */
+  const roleOptions = React.useMemo(
+    () => [{ label: "All", value: "All" }, ...createRoleOptions(roles)],
+    [roles]
+  );
 
-    return matchesSearch && matchesRole && matchesStatus;
-  });
+  /* ── table filtering ─────────────────────── */
+  const filteredData = React.useMemo(() => {
+    return users.filter((u) => {
+      const matchesSearch = `${u.firstName} ${u.lastName} ${u.email}`
+        .toLowerCase()
+        .includes(search.toLowerCase());
 
+      const matchesRole = role === "All" || u.role === role;
+      const matchesStatus =
+        status === "All" || (u.isActive ? "Active" : "Inactive") === status;
+
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, [users, search, role, status]);
+
+  /* ── UI ───────────────────────────────────── */
   return (
     <div className="space-y-8">
       <PageHeader
@@ -38,10 +60,11 @@ const AdminTable = () => {
         subText="Manage internal access by adding users and defining their control levels."
       />
 
+      {/* Filters */}
       <div className="flex flex-col xl:flex-row xl:items-end gap-4">
-        {/* Search Input */}
+        {/* Search */}
         <div className="flex-1 min-w-0">
-          <Label className="text-sm font-medium mb-2 block"></Label>
+          <Label className="text-sm font-medium mb-2 block" />
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4" />
             <Input
@@ -54,24 +77,31 @@ const AdminTable = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-end gap-4 xl:gap-6">
-          {/* Role Select */}
-          <div className="">
+          {/* Role select */}
+          <div>
             <Label className="text-sm font-medium mb-2 block">Role</Label>
-            <Select value={role} onValueChange={setRole}>
+            <Select
+              value={role}
+              onValueChange={(v) => setRole(v as RoleType | "All")}
+              disabled={rolesLoading}
+            >
               <SelectTrigger className="h-10 min-w-[140px]">
-                <SelectValue placeholder="Select role" />
+                <SelectValue
+                  placeholder={rolesLoading ? "Loading…" : "Select role"}
+                />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="All">All</SelectItem>
-                <SelectItem value="CSO">CSO</SelectItem>
-                <SelectItem value="HOP">HOP</SelectItem>
-                <SelectItem value="IT">IT</SelectItem>
+                {roleOptions.map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Status Select */}
-          <div className="">
+          {/* Status select */}
+          <div>
             <Label className="text-sm font-medium mb-2 block">Status</Label>
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger className="h-10 min-w-[140px]">
@@ -85,11 +115,12 @@ const AdminTable = () => {
             </Select>
           </div>
 
-          {/* Add Member */}
+          {/* Add member */}
           <AddTeamMemberDialog />
         </div>
       </div>
 
+      {/* Data table */}
       <DataTable columns={adminColumns} data={filteredData} />
     </div>
   );

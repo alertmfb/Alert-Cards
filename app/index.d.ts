@@ -1,5 +1,7 @@
 // types.ts
 
+import type { Role } from "./types/auth";
+
 export type BranchType =
   | "DIGITAL_BANKING"
   | "MUSHIN"
@@ -107,3 +109,30 @@ export type UserAdminType = {
   status: "Active" | "Inactive";
   createdAt: string;
 };
+
+// export type UserAdminType = {
+//   id: string;
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   branch: { name: string };
+//   role: Role;
+//   createdAt: string;
+// };
+
+export type ServerUser = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: Role;
+  branch: { name: string };
+  isActive: boolean;
+  createdAt: string;
+};
+
+export interface UsersResponse {
+  status: string;
+  data: ServerUser[];
+  message: string;
+}

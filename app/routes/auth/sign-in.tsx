@@ -1,12 +1,19 @@
+// routes/auth/sign-in.tsx - Fixed
 import { Navigate, useLocation } from "react-router";
 import { UserAuthForm } from "../../../components/auth/form/UserForm";
-import { useAuth } from "~/hooks/useAuth";
+import { useHydratedAuthStore } from "~/stores/authStore";
 
 export default function SignIn() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading, _hasHydrated } = useHydratedAuthStore();
   const location = useLocation();
 
-  // If already authenticated, redirect to dashboard
+  // Wait for hydration - the auth layout will handle this loading state
+  // so we don't need our own mounted state here
+  if (!_hasHydrated || isLoading) {
+    return null; // Let the AuthLayout handle the loading UI
+  }
+
+  // Only redirect after hydrated and not loading
   if (isAuthenticated) {
     const from = location.state?.from?.pathname || "/";
     return <Navigate to={from} replace />;

@@ -79,10 +79,61 @@ export interface ProfileResponse {
   message: string;
 }
 
+// export interface ProfileResponse {
+//   status: string;
+//   data: {
+//     id: string;
+//     email: string;
+//     firstName: string;
+//     lastName: string;
+//     role: string;
+//     branchId?: string;
+//   };
+//   message: string;
+// }
+
 export interface AuthState {
   user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+}
+
+// New types for invite and roles
+export interface InviteRequest {
+  email: string;
+  branchId: string;
+  role: string;
+}
+
+export interface InviteResponse {
+  status: string;
+  data: {
+    user: string;
+  };
+  message: string;
+}
+
+export interface AcceptInviteRequest {
+  firstName: string;
+  lastName: string;
+  password: string;
+}
+
+export interface AcceptInviteResponse {
+  status: string;
+  data: {
+    id: string;
+    email: string;
+  };
+  message: string;
+}
+
+export type Role = string;
+
+export interface RolesResponse {
+  status: string;
+  data: Role[];
+  message: string;
 }

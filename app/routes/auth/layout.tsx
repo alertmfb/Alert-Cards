@@ -1,19 +1,14 @@
-// routes/auth/layout.tsx (Fixed)
+// routes/auth/layout.tsx - Fixed
 import { AuthLeftPanel } from "components/auth/components/AuthLeftPanel";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Navigate, Outlet } from "react-router";
-import { useAuth } from "~/hooks/useAuth";
+import { useHydratedAuthStore } from "~/stores/authStore";
 
 export function AuthLayout() {
-  const [mounted, setMounted] = useState(false);
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, _hasHydrated } = useHydratedAuthStore();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Wait until mounted to prevent hydration issues
-  if (!mounted || isLoading) {
+  // Show loading state during hydration or auth check
+  if (isLoading || !_hasHydrated) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
@@ -21,7 +16,7 @@ export function AuthLayout() {
     );
   }
 
-  // If authenticated, redirect to dashboard
+  // Redirect to home if already authenticated
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }

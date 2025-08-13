@@ -19,25 +19,60 @@ import { Button } from "components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Plus } from "lucide-react";
 import type { BranchType, RoleType } from "~/index";
-import { branchOptions } from "~/constants/data";
 import { toast } from "sonner";
-
-const roleOptions: RoleType[] = ["CSO", "HOP", "IT"];
+import { useBranchOptions } from "~/hooks/useBranchOptions";
+import { useInviteMutation } from "~/api/mutations/auth";
+import { COMPANY_EMAIL_REGEX } from "~/lib/utils/validation";
+import { useRolesQuery } from "~/api/queries/auth";
+import { useRoleStore } from "~/stores/roleStore";
+import { createRoleOptions } from "~/lib/utils/roleOptions";
 
 export const AddTeamMemberDialog = () => {
   const [email, setEmail] = React.useState("");
   const [branch, setBranch] = React.useState<BranchType | "">("");
   const [role, setRole] = React.useState<RoleType | "">("");
-  const [open, setOpen] = React.useState(false); // control dialog open state
+  const [open, setOpen] = React.useState(false);
 
-  const handleInvite = () => {
-    toast.success("Invite sent successfully.");
-    setOpen(false); // close dialog after success
+  const { branchOptions, isLoading: branchesLoading } = useBranchOptions();
+  const { isLoading: rolesLoading } = useRolesQuery();
+  const roles = useRoleStore((s) => s.roles);
 
-    // Optionally reset form:
-    setEmail("");
-    setBranch("");
-    setRole("");
+  const inviteMutation = useInviteMutation();
+
+  const emailIsValid = COMPANY_EMAIL_REGEX.test(email.trim());
+
+  // Create role options from store data
+  const roleOptions = React.useMemo(() => createRoleOptions(roles), [roles]);
+
+  const handleInvite = async () => {
+    if (!email || !branch || !role) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    if (!emailIsValid) {
+      toast.error(
+        "Please enter a valid email address (e.g. adeyemi.tolulope@alertmfb.com.ng)"
+      );
+      return;
+    }
+
+    try {
+      await inviteMutation.mutateAsync({
+        email,
+        branchId: branch,
+        role,
+      });
+
+      toast.success("Invite sent successfully.");
+      setOpen(false);
+
+      // Reset form
+      setEmail("");
+      setBranch("");
+      setRole("");
+    } catch (error) {
+      toast.error("Failed to send invite. Please try again.");
+    }
   };
 
   return (
@@ -70,9 +105,14 @@ export const AddTeamMemberDialog = () => {
             <Select
               value={branch}
               onValueChange={(val) => setBranch(val as BranchType)}
+              disabled={branchesLoading}
             >
               <SelectTrigger className="h-10 w-full">
-                <SelectValue placeholder="Select a branch" />
+                <SelectValue
+                  placeholder={
+                    branchesLoading ? "Loading branches..." : "Select a branch"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {branchOptions.map(({ label, value }) => (
@@ -89,14 +129,19 @@ export const AddTeamMemberDialog = () => {
             <Select
               value={role}
               onValueChange={(val) => setRole(val as RoleType)}
+              disabled={rolesLoading}
             >
               <SelectTrigger className="h-10 w-full">
-                <SelectValue placeholder="Select a role" />
+                <SelectValue
+                  placeholder={
+                    rolesLoading ? "Loading roles..." : "Select a role"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
-                {roleOptions.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
+                {roleOptions.map(({ label, value }) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -107,7 +152,9 @@ export const AddTeamMemberDialog = () => {
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={handleInvite}>Send Invite</Button>
+          <Button onClick={handleInvite} disabled={inviteMutation.isPending}>
+            {inviteMutation.isPending ? "Sending..." : "Send Invite"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

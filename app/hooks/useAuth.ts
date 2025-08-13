@@ -1,229 +1,120 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useLocation } from "react-router";
+// hooks/useAuth.ts - Fixed
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { useAuthStore } from "../stores/authStore";
 import { authApi } from "~/api/services/auth";
+import { useHydratedAuthStore } from "~/stores/authStore";
 import type { LoginRequest } from "~/types/auth";
-import { useEffect, useCallback, useRef } from "react";
-
-// Helper function to safely extract user data
-const extractUserData = (data: any) => {
-  if (!data) return null;
-
-  // Handle different possible response structures
-  let userData = data;
-  if (data.data) {
-    userData = data.data;
-  }
-  if (data.user) {
-    userData = data.user;
-  }
-
-  return {
-    id: userData?.id || "",
-    name: userData?.name || "",
-    email: userData?.email || "",
-    avatar: userData?.avatar || "",
-  };
-};
-
-// Helper function to safely extract auth tokens
-const extractAuthData = (data: any) => {
-  if (!data) return { accessToken: "", refreshToken: "" };
-
-  let authData = data;
-  if (data.data) {
-    authData = data.data;
-  }
-
-  return {
-    accessToken: authData?.accessToken || authData?.access_token || "",
-    refreshToken: authData?.refreshToken || authData?.refresh_token || "",
-  };
-};
+import { useCallback, useRef, useEffect } from "react";
 
 export const useAuth = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
-  const hasInitialized = useRef(false);
-
-  const authStore = useAuthStore();
   const {
-    setAuth,
-    clearAuth,
-    setUser,
-    setLoading,
-    setInitialized,
     user,
-    isAuthenticated,
-    isLoading,
-    initialized,
     accessToken,
     refreshToken,
-  } = authStore;
+    isAuthenticated,
+    isLoading,
+    _hasHydrated,
+    setAuth,
+    clearAuth,
+    setLoading,
+  } = useHydratedAuthStore();
 
-  // Initialize auth state ONLY ONCE
+  // Use ref to track if we've already initiated a user fetch
+  const userFetchInitiated = useRef(false);
+
+  // Reset the ref when accessToken changes or user is cleared
   useEffect(() => {
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-
-      // Get current state to avoid stale closures
-      const currentState = useAuthStore.getState();
-
-      if (currentState.accessToken && currentState.refreshToken) {
-        // We have tokens, mark as authenticated and initialized
-        setInitialized(true);
-        if (!currentState.isAuthenticated) {
-          // Update auth state if not already set
-          useAuthStore.setState({
-            isAuthenticated: true,
-            initialized: true,
-            isLoading: false,
-          });
-        }
-      } else {
-        // No tokens, mark as initialized but not authenticated
-        setInitialized(true);
-        useAuthStore.setState({
-          isAuthenticated: false,
-          initialized: true,
-          isLoading: false,
-        });
-      }
+    if (!accessToken || !user) {
+      userFetchInitiated.current = false;
     }
-  }, []); // Empty dependency array - run only once
+  }, [accessToken, user]);
 
-  // Login mutation
-  const loginMutation = useMutation({
-    mutationFn: authApi.login,
-    onMutate: () => {
-      setLoading(true);
+  // Get user profile - only fetch if we have token, no user, haven't fetched yet, and are hydrated
+  const shouldFetchUser = Boolean(
+    _hasHydrated && accessToken && !user && !userFetchInitiated.current
+  );
+
+  const userQuery = useQuery({
+    queryKey: ["user", accessToken],
+    queryFn: async () => {
+      userFetchInitiated.current = true;
+      return authApi.getProfile();
     },
-    onSuccess: (data) => {
-      try {
-        console.log("Login success data:", data);
-        const authData = extractAuthData(data);
-
-        if (!authData.accessToken || !authData.refreshToken) {
-          throw new Error("Invalid auth response: missing tokens");
-        }
-
-        // Create a temporary user object
-        const tempUser = {
-          id: "",
-          name: "",
-          email: "",
-          avatar: "",
-        };
-
-        setAuth(tempUser, authData.accessToken, authData.refreshToken);
-        queryClient.invalidateQueries({ queryKey: ["profile"] });
-
-        const message =
-          typeof data === "object" && data !== null && "message" in data
-            ? String(data.message)
-            : "Login successful";
-        toast.success(message);
-
-        const from = (location.state as any)?.from || "/";
-        navigate(from, { replace: true });
-      } catch (error) {
-        console.error("Login success handler error:", error);
-        setLoading(false);
-        toast.error("Login failed: Invalid response");
-      }
-    },
-    onError: (error: any) => {
-      console.error("Login error:", error);
-      setLoading(false);
-      const errorMessage =
-        error?.response?.data?.message || error?.message || "Login failed";
-      toast.error(errorMessage);
-    },
-  });
-
-  // Logout mutation
-  const logoutMutation = useMutation({
-    mutationFn: authApi.logout,
-    onSuccess: (data) => {
-      clearAuth();
-      queryClient.clear();
-
-      const message =
-        typeof data === "object" && data !== null && "message" in data
-          ? String(data.message)
-          : "Logout successful";
-      toast.success(message);
-      navigate("/sign-in", { replace: true });
-    },
-    onError: (error: any) => {
-      console.error("Logout error:", error);
-      clearAuth();
-      queryClient.clear();
-
-      const errorMessage =
-        error?.response?.data?.message || error?.message || "Logout failed";
-      toast.error(errorMessage);
-      navigate("/sign-in", { replace: true });
-    },
-  });
-
-  // Profile query - Only run when we have auth tokens
-  const profileQuery = useQuery({
-    queryKey: ["profile"],
-    queryFn: authApi.getProfile,
-    enabled: Boolean(
-      initialized && isAuthenticated && accessToken && !isLoading
-    ),
+    enabled: shouldFetchUser,
     retry: (failureCount, error: any) => {
+      // Don't retry on 401 errors
       if (error?.response?.status === 401) {
         return false;
       }
       return failureCount < 2;
     },
     staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
-  // Handle profile query success
+  // Handle successful user fetch
   useEffect(() => {
-    if (
-      profileQuery.data &&
-      profileQuery.isSuccess &&
-      !profileQuery.isLoading
-    ) {
+    if (userQuery.data && !user && accessToken) {
+      const userData = userQuery.data.data;
+      setAuth(userData, accessToken, refreshToken || "");
+    }
+  }, [userQuery.data, user, accessToken, refreshToken, setAuth]);
+
+  // Login mutation
+  const loginMutation = useMutation({
+    mutationFn: authApi.login,
+    onMutate: () => {
+      setLoading(true);
+      userFetchInitiated.current = false; // Reset for new login
+    },
+    onSuccess: async (data) => {
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+        data.data;
+
       try {
-        console.log("Profile data:", profileQuery.data);
-        const userData = extractUserData(profileQuery.data);
+        // Get user profile with the new token
+        const userResponse = await authApi.getProfile();
+        const userData = userResponse.data;
 
-        if (userData && userData.id) {
-          setUser(userData);
-        }
+        // Set auth with user data
+        setAuth(userData, newAccessToken, newRefreshToken);
+        queryClient.setQueryData(["user", newAccessToken], userResponse);
+        userFetchInitiated.current = true;
+
+        toast.success("Login successful");
+        navigate("/", { replace: true });
       } catch (error) {
-        console.error("Profile data processing error:", error);
+        setLoading(false);
+        toast.error("Failed to get user profile");
       }
-    }
-  }, [
-    profileQuery.data,
-    profileQuery.isSuccess,
-    profileQuery.isLoading,
-    setUser,
-  ]);
+    },
+    onError: (error: any) => {
+      setLoading(false);
+      const message = error?.response?.data?.message || "Login failed";
+      toast.error(message);
+    },
+  });
 
-  // Handle profile query error
-  useEffect(() => {
-    if (profileQuery.error && profileQuery.isError) {
-      const error = profileQuery.error as any;
-      console.error("Profile fetch failed:", error);
-
-      if (error?.response?.status === 401) {
-        console.log("Unauthorized - clearing auth");
-        clearAuth();
-        navigate("/sign-in", { replace: true });
-      }
-    }
-  }, [profileQuery.error, profileQuery.isError, clearAuth, navigate]);
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: () => {
+      if (!refreshToken) throw new Error("No refresh token");
+      return authApi.logout({ refreshToken });
+    },
+    onMutate: () => setLoading(true),
+    onSettled: () => {
+      // Always clear auth state regardless of success/error
+      clearAuth();
+      queryClient.clear();
+      userFetchInitiated.current = false;
+      navigate("/sign-in", { replace: true });
+      toast.success("Logged out successfully");
+    },
+  });
 
   const login = useCallback(
     (data: LoginRequest) => {
@@ -233,29 +124,19 @@ export const useAuth = () => {
   );
 
   const logout = useCallback(() => {
-    const currentRefreshToken = refreshToken;
-    if (currentRefreshToken) {
-      logoutMutation.mutate({ refreshToken: currentRefreshToken });
-    } else {
-      clearAuth();
-      navigate("/sign-in", { replace: true });
-    }
-  }, [logoutMutation, clearAuth, navigate, refreshToken]);
+    logoutMutation.mutate();
+  }, [logoutMutation]);
 
-  // Return only safe, serializable data
   return {
-    user: user || null,
-    isAuthenticated: Boolean(isAuthenticated),
-    isLoading: Boolean(
-      isLoading || loginMutation.isPending || logoutMutation.isPending
-    ),
-    initialized: Boolean(initialized),
+    user,
+    isAuthenticated,
+    isLoading:
+      isLoading ||
+      loginMutation.isPending ||
+      logoutMutation.isPending ||
+      userQuery.isLoading,
     login,
     logout,
-    // Return only safe profile data
-    profileLoading: profileQuery.isLoading,
-    profileError: profileQuery.error ? String(profileQuery.error) : null,
-    loginError: loginMutation.error ? String(loginMutation.error) : null,
-    logoutError: logoutMutation.error ? String(logoutMutation.error) : null,
+    error: loginMutation.error || logoutMutation.error || userQuery.error,
   };
 };
