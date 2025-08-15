@@ -22,11 +22,15 @@ import type { DateRange } from "react-day-picker";
 import { customerCardColumns } from "./columns";
 import { Label } from "~/components/ui/label";
 import type { BranchType } from "~/index";
+import { useGetCards } from "~/hooks/useCard";
+import type { CardData } from "~/types/card";
 
 const CardTransfersTable = () => {
   const [search, setSearch] = useState("");
   const [branch, setBranch] = useState<BranchType | "ALL">("ALL");
   const [deliveryStatus, setDeliveryStatus] = React.useState("All");
+  const { data, isPending } = useGetCards();
+  console.log(data, isPending);
   const [dateRange, setDateRange] = React.useState<DateRange>({
     from: undefined,
     to: undefined,
@@ -133,7 +137,10 @@ const CardTransfersTable = () => {
       </div>
       {/* </div> */}
 
-      <DataTable columns={customerCardColumns} data={customerCardTableData} />
+      <DataTable
+        columns={customerCardColumns}
+        data={data?.data as CardData[]}
+      />
     </div>
   );
 };

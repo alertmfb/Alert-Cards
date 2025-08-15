@@ -59,7 +59,7 @@ export const useAuth = () => {
   // Handle successful user fetch
   useEffect(() => {
     if (userQuery.data && !user && accessToken) {
-      const userData = userQuery.data.data;
+      const userData = userQuery.data;
       setAuth(userData, accessToken, refreshToken || "");
     }
   }, [userQuery.data, user, accessToken, refreshToken, setAuth]);
@@ -68,25 +68,27 @@ export const useAuth = () => {
   const loginMutation = useMutation({
     mutationFn: authApi.login,
     onMutate: () => {
-      setLoading(true);
+      // setLoading(true);
       userFetchInitiated.current = false; // Reset for new login
     },
     onSuccess: async (data) => {
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
         data.data;
-
+      setAuth(null, newAccessToken, newRefreshToken);
+      console.log(data);
       try {
         // Get user profile with the new token
         const userResponse = await authApi.getProfile();
-        const userData = userResponse.data;
+        console.log(userResponse, "tesssss water");
+        const userData = userResponse;
 
         // Set auth with user data
         setAuth(userData, newAccessToken, newRefreshToken);
         queryClient.setQueryData(["user", newAccessToken], userResponse);
         userFetchInitiated.current = true;
 
-        toast.success("Login successful");
-        navigate("/", { replace: true });
+        // toast.success("Login successful");
+        // navigate("/", { replace: true });
       } catch (error) {
         setLoading(false);
         toast.error("Failed to get user profile");
@@ -118,6 +120,7 @@ export const useAuth = () => {
 
   const login = useCallback(
     (data: LoginRequest) => {
+      console.log(data);
       loginMutation.mutate(data);
     },
     [loginMutation]

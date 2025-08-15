@@ -6,8 +6,9 @@ import type { CustomerCardData } from "~/index";
 import { Checkbox } from "components/ui/checkbox";
 import { ActionMenu } from "./ActionMenu";
 import { maskPan } from "~/utils";
+import type { CardData } from "~/types/card";
 
-export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
+export const customerCardColumns: ColumnDef<CardData>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -30,6 +31,7 @@ export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
   {
     accessorKey: "customerName",
     header: "Customer Name",
+    cell: ({ row }) => row.original?.customer?.customerName || "N/A",
   },
   {
     accessorKey: "accountNumber",
@@ -38,7 +40,7 @@ export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
   {
     accessorKey: "panNumber",
     header: "PAN Number",
-    cell: ({ row }) => maskPan(row.original.panNumber) || "N/A",
+    cell: ({ row }) => maskPan(row.original?.pan) || "N/A",
   },
   {
     accessorKey: "cardScheme",
@@ -52,16 +54,18 @@ export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
     accessorKey: "cardStatus",
     header: "Card Status",
     cell: ({ row }) => {
-      const status = row.original.cardStatus;
+      const status = row.original.card?.status;
 
       const variant =
-        status === "Activated"
+        row.original.card?.status === "Activated"
           ? "success"
-          : status === "Inactive"
-          ? "warning"
-          : "danger";
+          : row.original.card?.status === "Inactive"
+            ? "warning"
+            : "danger";
 
-      return <CustomStatus label={status} variant={variant} />;
+      return (
+        <CustomStatus label={row.original.card?.status} variant={variant} />
+      );
     },
   },
   {
@@ -74,15 +78,15 @@ export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
         status === "Branch Delivered"
           ? "success"
           : status === "Dispatched"
-          ? "info"
-          : "warning";
+            ? "info"
+            : "warning";
 
       return <CustomStatus label={status} variant={variant} />;
     },
   },
-  {
-    id: "actions",
-    header: "Action",
-    cell: ({ row }) => <ActionMenu item={row.original} />,
-  },
+  // {
+  //   id: "actions",
+  //   header: "Action",
+  //   cell: ({ row }) => <ActionMenu item={row.original} />,
+  // },
 ];

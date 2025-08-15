@@ -27,6 +27,7 @@ axiosInstance.interceptors.request.use(
     // Only get token if store is initialized and we're on client
     if (authStore && typeof window !== "undefined") {
       const state = authStore.getState();
+      console.log(state, "remilekun");
       const { accessToken } = state;
 
       if (accessToken && config.headers) {
@@ -53,12 +54,12 @@ axiosInstance.interceptors.response.use(
       clearAuth();
 
       // Only redirect if not already on sign-in page
-      if (window.location.pathname !== "/sign-in") {
-        // Use a timeout to avoid potential race conditions
-        setTimeout(() => {
-          window.location.href = "/sign-in";
-        }, 0);
-      }
+      // if (window.location.pathname !== "/sign-in") {
+      //   // Use a timeout to avoid potential race conditions
+      //   setTimeout(() => {
+      //     window.location.href = "/sign-in";
+      //   }, 0);
+      // }
     }
 
     return Promise.reject(error);

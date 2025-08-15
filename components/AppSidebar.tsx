@@ -33,12 +33,7 @@ import {
 import { NavMain } from "./nav-main";
 import { Link } from "react-router";
 import Image from "./Image";
-
-export const user = {
-  name: "Archibong Blaise",
-  email: "archibongblaise@gmail.com",
-  avatar: "",
-};
+import { useAuth } from "~/hooks/useAuth";
 
 const navItems = [
   {
@@ -77,6 +72,13 @@ const navItems = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
+  const { user } = useAuth();
+
+  const userData = {
+    name: user?.firstName || "User",
+    email: user?.email || "user@example.com",
+    avatar: user?.avatar || "",
+  };
   const isCollapsed = state === "collapsed";
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -120,7 +122,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={navItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

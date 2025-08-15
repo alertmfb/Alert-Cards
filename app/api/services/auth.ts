@@ -10,6 +10,7 @@ import type {
   LogoutResponse,
   ProfileResponse,
   RolesResponse,
+  User,
 } from "~/types/auth";
 
 export const authApi = {
@@ -39,11 +40,9 @@ export const authApi = {
     }
   },
 
-  getProfile: async (): Promise<ProfileResponse> => {
+  getProfile: async (): Promise<User> => {
     try {
-      const response = await axiosInstance.get<ProfileResponse>(
-        "/auth/profile"
-      );
+      const response = await axiosInstance.get<User>("/auth/profile");
       return response.data;
     } catch (error) {
       console.error("Profile API error:", error);

@@ -12,7 +12,11 @@ interface AuthStore {
   _hasHydrated: boolean; // Internal hydration flag
 
   // Actions
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
+  setAuth: (
+    user: User | null,
+    accessToken: string,
+    refreshToken: string
+  ) => void;
   clearAuth: () => void;
   setLoading: (loading: boolean) => void;
   _setHasHydrated: (hasHydrated: boolean) => void;

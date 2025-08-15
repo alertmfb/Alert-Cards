@@ -71,6 +71,11 @@ export interface User {
   email: string;
   avatar?: string;
   role?: string;
+  branch: string;
+  firstName: string;
+  lastName: string;
+  branchId: string;
+  jti: string;
 }
 
 export interface ProfileResponse {

@@ -46,6 +46,7 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  console.log(columns);
   return (
     <div>
       <div className="rounded-md border border-muted">
@@ -109,7 +110,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns?.length}
                   className="h-24 text-center"
                 >
                   <NoData />
@@ -121,10 +122,10 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex justify-between items-center py-4">
         {/* Selected Rows Info */}
-        <div className="text-sm text-gray-500">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
+        {/* <div className="text-sm text-gray-500">
+          {table.getFilteredSelectedRowModel()?.rows?.length} of{" "}
+          {table.getFilteredRowModel()?.rows?.length} row(s) selected.
+        </div> */}
 
         {/* Pagination Controls */}
         <div className="flex items-center gap-2">

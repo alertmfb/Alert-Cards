@@ -38,7 +38,7 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const { userRole, setUserRole } = useUserRolesStore();
   const { user, logout } = useAuth();
-
+  console.log(user);
   const handleLogout = () => {
     logout();
   };
@@ -77,7 +77,7 @@ export default function Navbar() {
 
   // Safely get user data with fallbacks
   const userData = {
-    name: user?.name || "User",
+    name: user?.firstName || "User",
     email: user?.email || "user@example.com",
     avatar: user?.avatar || "",
   };
