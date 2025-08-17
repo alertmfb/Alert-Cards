@@ -1,6 +1,6 @@
 {
   "include": [
-    "**/*",
+    "src/**/*",
     "**/.server/**/*",
     "**/.client/**/*",
     ".react-router/types/**/*",
@@ -16,7 +16,15 @@
     "rootDirs": [".", "./.react-router/types"],
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./app/*"]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/store/*": ["./src/store/*"],
+      "@/api/*": ["./src/api/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/styles/*": ["./src/styles/*"],
+      "@/assets/*": ["./src/assets/*"]
     },
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
