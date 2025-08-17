@@ -1,4 +1,4 @@
-import CardUnblock from "components/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardUnblock";
+import CardUnblock from "~/components/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardUnblock";
 import React from "react";
 
 const unblockCardPage = () => {

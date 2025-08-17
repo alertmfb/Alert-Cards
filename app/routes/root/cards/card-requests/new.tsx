@@ -1,4 +1,4 @@
-import CreateCardRequestStep2 from "components/cards/CardRequests/CreateCardRequest/CardRequest";
+import CreateCardRequestStep2 from "~/components/cards/CardRequests/CreateCardRequest/CardRequest";
 
 const NewCardRequest = () => {
   return (

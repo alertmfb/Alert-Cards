@@ -1,4 +1,4 @@
-import CardTrackerTable from "components/cards/CardTracker/CardTrackerTable";
+import CardTrackerTable from "~/components/cards/CardTracker/CardTrackerTable";
 import React from "react";
 
 const CardTracker = () => {

@@ -1,4 +1,4 @@
-import CardTransfersTable from "components/cards/CardTransfers/CardTransfersTable";
+import CardTransfersTable from "~/components/cards/CardTransfers/CardTransfersTable";
 
 const CardTransfers = () => {
   return (

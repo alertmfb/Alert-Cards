@@ -1,4 +1,4 @@
-import CardRequestSummary from "components/cards/CardRequests/CreateCardRequest/SubmitCardRequest";
+import CardRequestSummary from "~/components/cards/CardRequests/CreateCardRequest/SubmitCardRequest";
 
 const SubmitCardRequest = () => {
   return (

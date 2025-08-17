@@ -1,4 +1,4 @@
-import CardActivation from "components/cards/CardActivationPinReset/CardActivationAndPinResetPage/CardActivationPage";
+import CardActivation from "~/components/cards/CardActivationPinReset/CardActivationAndPinResetPage/CardActivationPage";
 import React from "react";
 
 const CardActivationPage = () => {

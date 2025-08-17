@@ -1,4 +1,4 @@
-import CardPinResetPage from "components/cards/CardActivationPinReset/CardActivationAndPinResetPage/CardPinResetPage";
+import CardPinResetPage from "~/components/cards/CardActivationPinReset/CardActivationAndPinResetPage/CardPinResetPage";
 
 const CardPinReset = () => {
   return (

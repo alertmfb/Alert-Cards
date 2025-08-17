@@ -1,4 +1,4 @@
-import { OtpForm } from "components/auth/form/OtpForm";
+import { OtpForm } from "~/components/auth/form/OtpForm";
 import { AuthLayout } from "./layout";
 
 export default function OtpPage() {

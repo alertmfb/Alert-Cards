@@ -1,4 +1,4 @@
-import AdminTable from "components/administration/admin";
+import AdminTable from "~/components/administration/admin";
 import React from "react";
 
 const AdminPage = () => {

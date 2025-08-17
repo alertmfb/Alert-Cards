@@ -1,5 +1,5 @@
-import AllCardsTable from "components/cards/AllCards/AllCardsTable";
-import { PageHeader } from "components/shared/PageHeader";
+import AllCardsTable from "~/components/cards/AllCards/AllCardsTable";
+import { PageHeader } from "~/components/shared/PageHeader";
 import React from "react";
 
 const AllCardsPage = () => {

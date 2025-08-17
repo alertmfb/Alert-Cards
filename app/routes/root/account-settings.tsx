@@ -1,4 +1,4 @@
-import SettingsPage from "components/settings/settings";
+import SettingsPage from "~/components/settings/settings";
 
 import React from "react";
 

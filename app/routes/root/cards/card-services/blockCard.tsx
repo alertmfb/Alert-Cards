@@ -1,4 +1,4 @@
-import BlockCard from "components/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardBlock";
+import BlockCard from "~/components/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardBlock";
 
 const BlockCardPage = () => {
   return (

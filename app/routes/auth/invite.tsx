@@ -1,4 +1,4 @@
-import { SetPasswordForm } from "components/auth/form/SetPasswordForm";
+import { SetPasswordForm } from "~/components/auth/form/SetPasswordForm";
 import { AuthLayout } from "./layout";
 
 export default function InvitePage() {

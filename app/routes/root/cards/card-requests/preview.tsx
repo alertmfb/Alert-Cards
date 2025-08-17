@@ -1,4 +1,4 @@
-import CardRequestPreview from "components/cards/CardRequests/CreateCardRequest/CardRequestPreview";
+import CardRequestPreview from "~/components/cards/CardRequests/CreateCardRequest/CardRequestPreview";
 
 const CardRequest = () => {
   return (

@@ -1,5 +1,5 @@
-import CardRequestTable from "components/cards/CardRequests/CardRequestsTable";
-import CreateCardRequestPage from "components/cards/CardRequests/CreateCardRequest/CreateCardRequest";
+import CardRequestTable from "~/components/cards/CardRequests/CardRequestsTable";
+import CreateCardRequestPage from "~/components/cards/CardRequests/CreateCardRequest/CreateCardRequest";
 import { useUserRolesStore } from "~/stores/useUserRolesStore";
 
 const CardRequests = () => {

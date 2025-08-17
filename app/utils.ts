@@ -1,7 +1,7 @@
 import { format, isValid, parseISO } from "date-fns";
 import { branchOptions } from "./constants/data";
 import type { CardVariant } from ".";
-import type { CardType } from "components/custom/CardDisplay";
+import type { CardType } from "~/components/custom/CardDisplay";
 
 export const maskPan = (pan: string): string => {
   if (!pan || pan.length < 4) return pan;

@@ -1,4 +1,4 @@
-import { ForgotPasswordForm } from "components/auth/form/ForgotPasswordForm";
+import { ForgotPasswordForm } from "~/components/auth/form/ForgotPasswordForm";
 import { AuthLayout } from "./layout";
 
 export default function ForgotPasswordPage() {

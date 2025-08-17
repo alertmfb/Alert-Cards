@@ -1,5 +1,5 @@
-import CardActivationAndPinReset from "components/cards/CardActivationPinReset/CardActivationAndPinResetPage/CardActivationAndPinReset";
-import CardActivationPinResetTable from "components/cards/CardActivationPinReset/CardActivationPinResetTable";
+import CardActivationAndPinReset from "~/components/cards/CardActivationPinReset/CardActivationAndPinResetPage/CardActivationAndPinReset";
+import CardActivationPinResetTable from "~/components/cards/CardActivationPinReset/CardActivationPinResetTable";
 import React from "react";
 import { useUserRolesStore } from "~/stores/useUserRolesStore";
 

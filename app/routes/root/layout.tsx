@@ -1,7 +1,7 @@
-import { AppSidebar } from "components/AppSidebar";
-import { ProtectedRoute } from "components/auth/ProtectedRoute";
-import Navbar from "components/Navbar";
-import { SidebarProvider } from "components/ui/sidebar";
+import { AppSidebar } from "~/components/AppSidebar";
+import { ProtectedRoute } from "~/components/auth/ProtectedRoute";
+import Navbar from "~/components/Navbar";
+import { SidebarProvider } from "~/components/ui/sidebar";
 import { Outlet } from "react-router";
 
 const RootLayout = () => {

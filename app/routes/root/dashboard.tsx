@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
-import CardStatsGrid from "components/dashboard/DashboardCards";
-import { PageHeader } from "components/shared/PageHeader";
+import CardStatsGrid from "~/components/dashboard/DashboardCards";
+import { PageHeader } from "~/components/shared/PageHeader";
 import {
   Select,
   SelectContent,
   SelectValue,
   SelectItem,
   SelectTrigger,
-} from "components/ui/select";
-import { CardOverviewChart } from "components/dashboard/CardOverview";
-import { CardRequests } from "components/dashboard/CardRequest";
-import DashboardTable from "components/dashboard/DashboardTable/DashboardTable";
+} from "~/components/ui/select";
+import { CardOverviewChart } from "~/components/dashboard/CardOverview";
+import { CardRequests } from "~/components/dashboard/CardRequest";
+import DashboardTable from "~/components/dashboard/DashboardTable/DashboardTable";
 import { branchOptions } from "~/constants/data";
 
 const dateOptions = ["Last 7 days", "Last day", "This month"];

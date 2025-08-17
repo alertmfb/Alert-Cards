@@ -1,6 +1,6 @@
 // routes/auth/sign-in.tsx - Fixed
 import { Navigate, useLocation } from "react-router";
-import { UserAuthForm } from "../../../components/auth/form/UserForm";
+import { UserAuthForm } from "../../components/auth/form/UserForm";
 import { useHydratedAuthStore } from "~/stores/authStore";
 
 export default function SignIn() {

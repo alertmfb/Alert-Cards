@@ -1,5 +1,5 @@
-import BlockAndUnblockCards from "components/cards/BlockAndUnblockCards/BlockAndUnblockCards";
-import CardBlockAndUnblock from "components/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardBlockAndUnblock";
+import BlockAndUnblockCards from "~/components/cards/BlockAndUnblockCards/BlockAndUnblockCards";
+import CardBlockAndUnblock from "~/components/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardBlockAndUnblock";
 import { useUserRolesStore } from "~/stores/useUserRolesStore";
 
 const BlockUnblockCards = () => {

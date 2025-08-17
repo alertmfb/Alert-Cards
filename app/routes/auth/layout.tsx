@@ -1,5 +1,5 @@
 // routes/auth/layout.tsx - Fixed
-import { AuthLeftPanel } from "components/auth/components/AuthLeftPanel";
+import { AuthLeftPanel } from "~/components/auth/components/AuthLeftPanel";
 import React from "react";
 import { Navigate, Outlet } from "react-router";
 import { useHydratedAuthStore } from "~/stores/authStore";
