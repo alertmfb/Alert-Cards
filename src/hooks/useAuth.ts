@@ -56,13 +56,13 @@ export const useAuth = () => {
     refetchOnMount: false,
   });
 
-  // Handle successful user fetch
-  useEffect(() => {
-    if (userQuery.data && !user && accessToken) {
-      const userData = userQuery.data;
-      setAuth(userData, accessToken, refreshToken || "");
-    }
-  }, [userQuery.data, user, accessToken, refreshToken, setAuth]);
+  // // Handle successful user fetch
+  // useEffect(() => {
+  //   if (userQuery.data && !user && accessToken) {
+  //     const userData = userQuery.data;
+  //     setAuth(userData, accessToken, refreshToken || "");
+  //   }
+  // }, [userQuery.data, user, accessToken, refreshToken, setAuth]);
 
   // Login mutation
   const loginMutation = useMutation({
@@ -87,8 +87,8 @@ export const useAuth = () => {
         queryClient.setQueryData(["user", newAccessToken], userResponse);
         userFetchInitiated.current = true;
 
-        // toast.success("Login successful");
-        // navigate("/", { replace: true });
+        toast.success("Login successful");
+        navigate("/", { replace: true });
       } catch (error) {
         setLoading(false);
         toast.error("Failed to get user profile");
@@ -132,6 +132,7 @@ export const useAuth = () => {
 
   return {
     user,
+    accessToken,
     isAuthenticated,
     isLoading:
       isLoading ||

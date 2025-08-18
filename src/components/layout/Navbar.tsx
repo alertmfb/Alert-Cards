@@ -37,8 +37,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { userRole, setUserRole } = useUserRolesStore();
-  const { user, logout } = useAuth();
-  console.log(user);
+  const { user, accessToken, logout } = useAuth();
+  console.log(user, accessToken);
   const handleLogout = () => {
     logout();
   };

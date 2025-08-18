@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { PageHeader } from "@/components/common/shared/PageHeader";
 import { DataTable } from "@/components/common/shared/Table/DataTable";
-import {
-  branchOptions,
-  CardTransfers,
-  customerCardTableData,
-} from "@/lib/data";
+import { branchOptions } from "@/lib/data";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -30,7 +26,7 @@ const CardTransfersTable = () => {
   const [branch, setBranch] = useState<BranchType | "ALL">("ALL");
   const [deliveryStatus, setDeliveryStatus] = React.useState("All");
   const { data, isPending } = useGetCards();
-  console.log(data, isPending);
+
   const [dateRange, setDateRange] = React.useState<DateRange>({
     from: undefined,
     to: undefined,

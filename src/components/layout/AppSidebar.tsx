@@ -1,26 +1,7 @@
 import * as React from "react";
-import {
-  UserRoundCog,
-  Rss,
-  Crown,
-  Handshake,
-  FolderOutput,
-  SquareTerminal,
-  MonitorCog,
-  CreditCard,
-  // GalleryVerticalEnd,
-  // AudioWaveform,
-  // Command,
-} from "lucide-react";
-import {
-  IconCategoryFilled,
-  IconUserShield,
-  IconBrandDatabricks,
-  IconHours24,
-  IconCards,
-} from "@tabler/icons-react";
+import { CreditCard } from "lucide-react";
+import { IconCategoryFilled, IconUserShield } from "@tabler/icons-react";
 import { NavUser } from "./nav-user";
-// import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -29,9 +10,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-// import { SearchForm } from "./search-form";
 import { NavMain } from "./nav-main";
-import { Link } from "react-router";
 import Image from "@/components/common/Image";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -41,11 +20,6 @@ const navItems = [
     url: "/",
     icon: IconCategoryFilled,
   },
-  //   {
-  //     title: "Users",
-  //     url: "/users",
-  //     icon: UserRoundCog,
-  //   },
   {
     title: "Cards",
     url: "#",
