@@ -19,6 +19,7 @@ import { createRoleOptions } from "@/lib/utils/roleOptions";
 import type { RoleType } from "@/types";
 import { useRolesQuery } from "@/api/queries/auth";
 import { useUsersQuery } from "@/api/queries/users";
+import TableLoader from "@/components/common/TableLoader";
 
 const AdminTable = () => {
   /* ── local state ─────────────────────────── */
@@ -121,7 +122,11 @@ const AdminTable = () => {
       </div>
 
       {/* Data table */}
-      <DataTable columns={adminColumns} data={filteredData} />
+      {usersLoading ? (
+        <TableLoader />
+      ) : (
+        <DataTable columns={adminColumns} data={filteredData} />
+      )}
     </div>
   );
 };
