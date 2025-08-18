@@ -12,7 +12,6 @@ import {
 import { Search } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { adminColumns } from "./columns";
-import { adminTableData } from "@/lib/data";
 import { AddTeamMemberDialog } from "./AddTeamMemberDialog";
 import { useRoleStore } from "@/store/slices/roleStore";
 import { createRoleOptions } from "@/lib/utils/roleOptions";

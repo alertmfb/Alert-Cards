@@ -20,10 +20,11 @@ import { Label } from "@/components/ui/label";
 import type { BranchType } from "@/types";
 import { useGetCards } from "@/hooks/useCard";
 import type { CardData } from "@/types/card";
+import TableLoader from "@/components/common/TableLoader";
 
 const CardTransfersTable = () => {
   const [search, setSearch] = useState("");
-  const [branch, setBranch] = useState<BranchType | "ALL">("ALL");
+  const [branch, setBranch] = useState<BranchType | "All">("All");
   const [deliveryStatus, setDeliveryStatus] = React.useState("All");
   const { data, isPending } = useGetCards();
 
@@ -45,6 +46,21 @@ const CardTransfersTable = () => {
     console.log("Exporting with filters:", payload);
     toast.success("✅ Export complete (simulated)");
   };
+  const cards = data?.data || [];
+  const filteredData = React.useMemo(() => {
+    return cards?.filter((card: CardData) => {
+      const matchesSearch =
+        `${card.customer?.customerName} ${card.customer?.accountNumber}`
+          .toLowerCase()
+          .includes(search.toLowerCase());
+      const matchesRole =
+        branch === "All" || card?.pickUpBranch?.name === branch;
+      const matchesStatus =
+        deliveryStatus === "All" ||
+        (card?.deliveryStatus ? "Active" : "Inactive") === deliveryStatus;
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -133,10 +149,11 @@ const CardTransfersTable = () => {
       </div>
       {/* </div> */}
 
-      <DataTable
-        columns={customerCardColumns}
-        data={data?.data as CardData[]}
-      />
+      {isPending ? (
+        <TableLoader />
+      ) : (
+        <DataTable columns={customerCardColumns} data={filteredData} />
+      )}
     </div>
   );
 };

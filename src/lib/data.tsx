@@ -12,7 +12,7 @@ import type {
 } from "..";
 
 export const branchOptions = [
-  { label: "All Branches", value: "ALL" },
+  { label: "All Branches", value: "All" },
   { label: "Digital Banking", value: "DIGITAL_BANKING" },
   { label: "Mushin", value: "MUSHIN" },
   { label: "Ikorodu", value: "IKORODU" },

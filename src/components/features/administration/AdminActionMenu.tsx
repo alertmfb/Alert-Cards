@@ -43,6 +43,7 @@ import {
 } from "@/api/mutations/users";
 
 export const AdminActionMenu = ({ admin }: { admin: ServerUser }) => {
+  console.log(admin, "full details");
   const [dialog, setDialog] = useState<
     null | "edit" | "suspend" | "activate" | "view"
   >(null);
@@ -54,11 +55,11 @@ export const AdminActionMenu = ({ admin }: { admin: ServerUser }) => {
 
   /* ── local editable copy ────────────────────────── */
   const [formData, setFormData] = useState({
-    firstName: admin.firstName,
-    lastName: admin.lastName,
-    email: admin.email,
-    branch: admin.branch?.name as BranchType | undefined,
-    role: admin.role as RoleType,
+    firstName: admin?.firstName,
+    lastName: admin?.lastName,
+    email: admin?.email,
+    branch: admin?.branch?.name as BranchType | null,
+    role: admin?.role as RoleType,
   });
 
   const { date, time } = formatDialogDateTime(admin.createdAt);
@@ -329,7 +330,7 @@ export const AdminActionMenu = ({ admin }: { admin: ServerUser }) => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="">No branch assigned</SelectItem>
-                  {branchOptions.map(({ label, value }) => (
+                  {branchOptions?.map(({ label, value }) => (
                     <SelectItem key={value} value={value}>
                       {label}
                     </SelectItem>
