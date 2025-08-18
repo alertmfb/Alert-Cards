@@ -27,7 +27,7 @@ axiosInstance.interceptors.request.use(
     // Only get token if store is initialized and we're on client
     if (authStore && typeof window !== "undefined") {
       const state = authStore.getState();
-      console.log(state, "remilekun");
+
       const { accessToken } = state;
 
       if (accessToken && config.headers) {

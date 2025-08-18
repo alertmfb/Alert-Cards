@@ -86,7 +86,7 @@ export const useAuth = () => {
         setAuth(userData, newAccessToken, newRefreshToken);
         queryClient.setQueryData(["user", newAccessToken], userResponse);
         userFetchInitiated.current = true;
-
+        console.log(userData, "user full details");
         toast.success("Login successful");
         navigate("/", { replace: true });
       } catch (error) {

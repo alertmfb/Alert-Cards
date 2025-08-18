@@ -1,13 +1,19 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
-
-import { QueryProvider } from "./store/providers/QueryProviders";
+import { useEffect } from "react";
+import { RouterProvider } from "react-router-dom";
+import { initializeAxiosAuth } from "./lib";
+import { useAuthStore } from "./store";
+import { router } from "./routes/routes";
 
 function App() {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      initializeAxiosAuth(useAuthStore);
+    }
+  }, []);
   return (
-    <QueryProvider>
-      <Outlet />
-    </QueryProvider>
+    <>
+      <RouterProvider router={router} />
+    </>
   );
 }
 
