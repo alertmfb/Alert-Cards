@@ -5,7 +5,7 @@ interface PersonalDetailsSectionProps {
   firstName: string;
   lastName: string;
   email: string;
-  dateOfBirth: string;
+  // dateOfBirth: string;
 }
 
 const InputLikeDisplay = ({
@@ -27,7 +27,7 @@ const PersonalDetailsSection: React.FC<PersonalDetailsSectionProps> = ({
   firstName,
   lastName,
   email,
-  dateOfBirth,
+  // dateOfBirth,
 }) => {
   return (
     <section className="space-y-4">
@@ -39,7 +39,7 @@ const PersonalDetailsSection: React.FC<PersonalDetailsSectionProps> = ({
             <InputLikeDisplay label="First Name" value={firstName} />
             <InputLikeDisplay label="Last Name" value={lastName} />
             <InputLikeDisplay label="Email Address" value={email} />
-            <InputLikeDisplay label="Date of Birth" value={dateOfBirth} />
+            {/* <InputLikeDisplay label="Date of Birth" value={dateOfBirth} /> */}
           </div>
         </CardContent>
       </Card>

@@ -1,4 +1,3 @@
-// components/Navbar.tsx (Updated)
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router";
@@ -22,8 +21,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/useAuth";
-import { useUserRolesStore } from "@/store/slices/useUserRolesStore";
 import NotificationBell from "@/components/common/shared/NotificationBell";
+import { Badge } from "../ui";
 
 const formatBreadcrumbText = (str: string) => {
   if (typeof str !== "string") return "Invalid";
@@ -36,9 +35,8 @@ const formatBreadcrumbText = (str: string) => {
 export default function Navbar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { userRole, setUserRole } = useUserRolesStore();
-  const { user, accessToken, logout } = useAuth();
-  console.log(user, accessToken);
+  const { user, logout } = useAuth();
+
   const handleLogout = () => {
     logout();
   };
@@ -94,23 +92,7 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-2 md:gap-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="text-xs border rounded px-2 py-1">
-              Role: {userRole === "approver" ? "Approval" : "Initiator"}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Switch Role</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setUserRole("approver")}>
-              Approver
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setUserRole("initiator")}>
-              Initiator
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Badge className="!bg-green-600">{user?.role as string}</Badge>
 
         <NotificationBell />
 

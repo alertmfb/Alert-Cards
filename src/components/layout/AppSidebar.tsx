@@ -17,7 +17,7 @@ import { useAuth } from "@/hooks/useAuth";
 const navItems = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: IconCategoryFilled,
   },
   {
@@ -44,10 +44,23 @@ const navItems = [
   },
 ];
 
+const itNavItems = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: IconCategoryFilled,
+  },
+  {
+    title: "Administration",
+    url: "/administration",
+    icon: IconUserShield,
+  },
+];
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
   const { user } = useAuth();
-
+  const links = user?.role === "IT" ? itNavItems : navItems;
   const userData = {
     name: user?.firstName || "User",
     email: user?.email || "user@example.com",
@@ -93,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={navItems} />
+        <NavMain items={links} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={userData} />

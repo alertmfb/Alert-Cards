@@ -53,13 +53,11 @@ axiosInstance.interceptors.response.use(
       const { clearAuth } = authStore.getState();
       clearAuth();
 
-      // Only redirect if not already on sign-in page
-      // if (window.location.pathname !== "/sign-in") {
-      //   // Use a timeout to avoid potential race conditions
-      //   setTimeout(() => {
-      //     window.location.href = "/sign-in";
-      //   }, 0);
-      // }
+      if (window.location.pathname !== "/sign-in") {
+        setTimeout(() => {
+          window.location.href = "/sign-in";
+        }, 0);
+      }
     }
 
     return Promise.reject(error);
