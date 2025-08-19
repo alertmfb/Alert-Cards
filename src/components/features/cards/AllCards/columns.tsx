@@ -36,6 +36,7 @@ export const customerCardColumns: ColumnDef<CardData>[] = [
   {
     accessorKey: "accountNumber",
     header: "Account Number",
+    cell: ({ row }) => row.original?.customer?.accountNumber || "N/A",
   },
   {
     accessorKey: "panNumber",
@@ -45,10 +46,12 @@ export const customerCardColumns: ColumnDef<CardData>[] = [
   {
     accessorKey: "cardScheme",
     header: "Card Scheme",
+    cell: ({ row }) => row.original?.scheme || "N/A",
   },
   {
     accessorKey: "branch",
     header: "Branch",
+    cell: ({ row }) => row.original?.pickUpBranch?.name || "N/A",
   },
   {
     accessorKey: "cardStatus",
@@ -60,8 +63,8 @@ export const customerCardColumns: ColumnDef<CardData>[] = [
         row.original.card?.status === "Activated"
           ? "success"
           : row.original.card?.status === "Inactive"
-            ? "warning"
-            : "danger";
+          ? "warning"
+          : "danger";
 
       return (
         <CustomStatus label={row.original.card?.status} variant={variant} />
@@ -78,8 +81,8 @@ export const customerCardColumns: ColumnDef<CardData>[] = [
         status === "Branch Delivered"
           ? "success"
           : status === "Dispatched"
-            ? "info"
-            : "warning";
+          ? "info"
+          : "warning";
 
       return <CustomStatus label={status} variant={variant} />;
     },

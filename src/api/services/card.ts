@@ -1,12 +1,14 @@
 import { axiosInstance } from "@/lib/axios";
-import type { CardResponse } from "@/types/card";
+import type { CardResponse, CardSummaryResponse } from "@/types/card";
 
 export const getCardRequest = async (): Promise<CardResponse> => {
   const res = await axiosInstance.get<CardResponse>("/cards/requests");
   return res.data;
 };
-export const getCardSummary = async (): Promise<any> => {
-  const res = await axiosInstance.get<CardResponse>("/cards/requests/summary");
+export const getCardSummary = async (): Promise<CardSummaryResponse> => {
+  const res = await axiosInstance.get<CardSummaryResponse>(
+    "/cards/requests/summary"
+  );
   return res.data;
 };
 export const getCardChartData = async (): Promise<any> => {

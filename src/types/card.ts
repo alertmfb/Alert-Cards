@@ -23,3 +23,14 @@ export interface CardResponse {
   message: string;
   data: CardData[];
 }
+
+export interface CardSummaryResponse {
+  status: string;
+  data: {
+    cardRequests: number;
+    pendingApprovals: number;
+    deliveredCards: number;
+    blockedCards: number;
+  };
+  message: string;
+}
