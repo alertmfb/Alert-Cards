@@ -1,6 +1,4 @@
 import * as React from "react";
-import { CreditCard } from "lucide-react";
-import { IconCategoryFilled, IconUserShield } from "@tabler/icons-react";
 import { NavUser } from "./nav-user";
 import {
   Sidebar,
@@ -13,54 +11,27 @@ import {
 import { NavMain } from "./nav-main";
 import Image from "@/components/common/Image";
 import { useAuth } from "@/hooks/useAuth";
-
-const navItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: IconCategoryFilled,
-  },
-  {
-    title: "Cards",
-    url: "#",
-    icon: CreditCard,
-    isActive: true,
-    items: [
-      { title: "All Cards", url: "/cards/all-cards" },
-      { title: "Card Requests", url: "/cards/card-requests" },
-      { title: "Card Tracker", url: "/cards/card-tracker" },
-      {
-        title: "Activation/ PIN Reset",
-        url: "/cards/activation-pin-reset",
-      },
-      { title: "Card Transfer", url: "/cards/card-transfer" },
-      { title: "Block/ Unblock Cards", url: "/cards/block-unblock-cards" },
-    ],
-  },
-  {
-    title: "Administration",
-    url: "/administration",
-    icon: IconUserShield,
-  },
-];
-
-const itNavItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: IconCategoryFilled,
-  },
-  {
-    title: "Administration",
-    url: "/administration",
-    icon: IconUserShield,
-  },
-];
+import {
+  csoNavItems,
+  headNavItems,
+  hopNavItems,
+  itNavItems,
+  navItems,
+} from "@/lib/utils/SidebarItems";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
   const { user } = useAuth();
-  const links = user?.role === "IT" ? itNavItems : navItems;
+  const links =
+    user?.role === "IT"
+      ? itNavItems
+      : user?.role === "HEAD_OF_DIGITAL"
+      ? headNavItems
+      : user?.role === "CSO"
+      ? csoNavItems
+      : user?.role === "HOP"
+      ? hopNavItems
+      : navItems;
   const userData = {
     name: user?.firstName || "User",
     email: user?.email || "user@example.com",
