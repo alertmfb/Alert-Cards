@@ -75,18 +75,18 @@ export const useAuth = () => {
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
         data.data;
       setAuth(null, newAccessToken, newRefreshToken);
-      console.log(data);
+
       try {
         // Get user profile with the new token
         const userResponse = await authApi.getProfile();
-        console.log(userResponse, "tesssss water");
+
         const userData = userResponse;
 
         // Set auth with user data
         setAuth(userData, newAccessToken, newRefreshToken);
         queryClient.setQueryData(["user", newAccessToken], userResponse);
         userFetchInitiated.current = true;
-        console.log(userData, "user full details");
+
         toast.success("Login successful");
         navigate("/", { replace: true });
       } catch (error) {
@@ -120,7 +120,6 @@ export const useAuth = () => {
 
   const login = useCallback(
     (data: LoginRequest) => {
-      console.log(data);
       loginMutation.mutate(data);
     },
     [loginMutation]

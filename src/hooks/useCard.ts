@@ -16,7 +16,7 @@ export function useGetCards() {
     // toast.error(error.message);
     console.log(error);
   }
-  console.log(data, "wha tis going on");
+
   return {
     data: data,
     error,

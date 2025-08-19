@@ -62,7 +62,6 @@ const CardTransfersTable = () => {
     });
   }, []);
 
-  console.log(cards, "testing");
   return (
     <div className="space-y-8">
       <PageHeader

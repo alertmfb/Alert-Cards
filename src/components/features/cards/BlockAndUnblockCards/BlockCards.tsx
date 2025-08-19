@@ -19,7 +19,7 @@ const BlockCards = () => {
 
   const handleExport = () => {
     toast.info("Exporting blocked cards...");
-    console.log("Export Blocked Cards with:", filters);
+
     // TODO: Replace with export endpoint
     toast.success("✅ Export complete (simulated)");
   };

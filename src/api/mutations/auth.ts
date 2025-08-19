@@ -14,7 +14,6 @@ export const useSignInMutation = () => {
       const { accessToken, refreshToken } = data.data;
       setAuth(null, accessToken, refreshToken);
 
-      console.log(accessToken, refreshToken);
       // Get user profile after successful login
       try {
         const userResponse = await authApi.getProfile();
