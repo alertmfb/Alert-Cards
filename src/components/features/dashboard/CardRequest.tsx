@@ -21,7 +21,7 @@ const cardTypeStyle = {
 
 export function CardRequests() {
   const { data, isPending } = useGetCards();
-  const requests = data?.data?.map((request: CardData) => ({
+  const requests = data?.data?.slice(0, 4)?.map((request: CardData) => ({
     name: request?.customer?.customerName,
     accountNumber: request?.customer?.accountNumber,
     type: request?.variant,
@@ -31,7 +31,7 @@ export function CardRequests() {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Card Requests</CardTitle>
-          <CardDescription> rd requests</CardDescription>
+          <CardDescription> Showing recent card requests</CardDescription>
         </div>
         <Button variant="ghost" className="text-sm gap-1 text-muted-foreground">
           View more <ArrowRight className="w-4 h-4" />
@@ -58,7 +58,16 @@ export function CardRequests() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium">{request.name}</p>
+                  <p className="font-medium text-sm">
+                    {request.name
+                      ?.split(" ")
+                      ?.map(
+                        (word) =>
+                          word.charAt(0).toUpperCase() +
+                          word.slice(1).toLowerCase()
+                      )
+                      ?.join(" ")}
+                  </p>
                 </div>
               </div>
 
