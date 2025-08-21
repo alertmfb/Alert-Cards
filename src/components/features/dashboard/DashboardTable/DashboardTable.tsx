@@ -11,11 +11,13 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DateRangePicker } from "@/components/common/shared/Table/DateRangePicker";
-import type { BranchType } from "@/types";
+import type { BranchType, CardData } from "@/types";
+import { useGetCards } from "@/hooks";
+import TableLoader from "@/components/common/TableLoader";
 
 type FilterValues = {
   search?: string;
@@ -26,12 +28,29 @@ type FilterValues = {
 
 const DashboardTable = () => {
   const [search, setSearch] = useState("");
-  const [branch, setBranch] = useState<BranchType | "ALL">("ALL");
+  const [branch, setBranch] = useState<BranchType | "All">("All");
   const [status, setStatus] = useState("All");
+  const { data, isPending } = useGetCards();
   const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
     to: undefined,
   });
+
+  const cards = data?.data || [];
+  const filteredData = React.useMemo(() => {
+    return cards?.filter((card: CardData) => {
+      const matchesSearch =
+        `${card.customer?.customerName} ${card.customer?.accountNumber}`
+          .toLowerCase()
+          .includes(search.toLowerCase());
+      const matchesRole =
+        branch === "All" || card?.pickUpBranch?.name === branch;
+      const matchesStatus =
+        status === "All" ||
+        (card?.deliveryStatus ? "Active" : "Inactive") === status;
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }, [cards, branch, status]);
 
   return (
     <div className="space-y-6">
@@ -57,7 +76,7 @@ const DashboardTable = () => {
             <Label className="text-sm font-medium mb-2 block">Branch</Label>
             <Select
               value={branch}
-              onValueChange={(val) => setBranch(val as BranchType | "ALL")}
+              onValueChange={(val) => setBranch(val as BranchType | "All")}
             >
               <SelectTrigger className="h-10 min-w-[140px]">
                 <SelectValue placeholder="Select branch" />
@@ -96,7 +115,11 @@ const DashboardTable = () => {
         </div>
       </div>
 
-      <DataTable columns={customerCardColumns} data={customerCardTableData} />
+      {isPending ? (
+        <TableLoader />
+      ) : (
+        <DataTable columns={customerCardColumns} data={filteredData} />
+      )}
     </div>
   );
 };

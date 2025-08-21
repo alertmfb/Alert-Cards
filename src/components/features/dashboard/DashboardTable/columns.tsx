@@ -2,12 +2,12 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { CustomStatus } from "@/components/common/shared/Table/CustomStatus";
-import type { CustomerCardData } from "@/types";
+import type { CardData, CustomerCardData } from "@/types";
 import { ActionMenu } from "./ActionMenu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { maskPan } from "@/lib";
 
-export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
+export const customerCardColumns: ColumnDef<CardData>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -30,38 +30,44 @@ export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
   {
     accessorKey: "customerName",
     header: "Customer Name",
+    cell: ({ row }) => row.original?.customer?.customerName || "N/A",
   },
   {
     accessorKey: "accountNumber",
     header: "Account Number",
+    cell: ({ row }) => row.original?.customer?.accountNumber || "N/A",
   },
   {
     accessorKey: "panNumber",
     header: "PAN Number",
-    cell: ({ row }) => maskPan(row.original.panNumber) || "N/A",
+    cell: ({ row }) => maskPan(row.original?.pan) || "N/A",
   },
   {
     accessorKey: "cardScheme",
     header: "Card Scheme",
+    cell: ({ row }) => row.original?.scheme || "N/A",
   },
   {
     accessorKey: "branch",
     header: "Branch",
+    cell: ({ row }) => row.original?.pickUpBranch?.name || "N/A",
   },
   {
     accessorKey: "cardStatus",
     header: "Card Status",
     cell: ({ row }) => {
-      const status = row.original.cardStatus;
+      const status = row.original.card?.status;
 
       const variant =
-        status === "Activated"
+        row.original.card?.status === "Activated"
           ? "success"
-          : status === "Inactive"
-            ? "warning"
-            : "danger";
+          : row.original.card?.status === "Inactive"
+          ? "warning"
+          : "danger";
 
-      return <CustomStatus label={status} variant={variant} />;
+      return (
+        <CustomStatus label={row.original.card?.status} variant={variant} />
+      );
     },
   },
   {
@@ -74,15 +80,15 @@ export const customerCardColumns: ColumnDef<CustomerCardData>[] = [
         status === "Branch Delivered"
           ? "success"
           : status === "Dispatched"
-            ? "info"
-            : "warning";
+          ? "info"
+          : "warning";
 
       return <CustomStatus label={status} variant={variant} />;
     },
   },
-  {
-    id: "actions",
-    header: "Action",
-    cell: ({ row }) => <ActionMenu item={row.original} />,
-  },
+  // {
+  //   id: "actions",
+  //   header: "Action",
+  //   cell: ({ row }) => <ActionMenu item={row.original} />,
+  // },
 ];

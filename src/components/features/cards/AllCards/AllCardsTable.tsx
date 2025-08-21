@@ -60,7 +60,7 @@ const CardTransfersTable = () => {
         (card?.deliveryStatus ? "Active" : "Inactive") === deliveryStatus;
       return matchesSearch && matchesRole && matchesStatus;
     });
-  }, []);
+  }, [cards, branch, deliveryStatus]);
 
   return (
     <div className="space-y-8">
