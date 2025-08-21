@@ -30,7 +30,13 @@ export const customerCardColumns: ColumnDef<CardData>[] = [
   {
     accessorKey: "customerName",
     header: "Customer Name",
-    cell: ({ row }) => row.original?.customer?.customerName || "N/A",
+    cell: ({ row }) =>
+      row.original?.customer?.customerName
+        .split(" ")
+        .map(
+          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(" ") || "N/A",
   },
   {
     accessorKey: "accountNumber",
