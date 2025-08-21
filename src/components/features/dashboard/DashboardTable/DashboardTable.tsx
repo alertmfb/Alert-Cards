@@ -36,7 +36,7 @@ const DashboardTable = () => {
     to: undefined,
   });
 
-  const cards = data?.data || [];
+  const cards = data?.data?.slice(0, 10) || [];
   const filteredData = React.useMemo(() => {
     return cards?.filter((card: CardData) => {
       const matchesSearch =
