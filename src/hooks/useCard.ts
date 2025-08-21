@@ -3,6 +3,7 @@ import {
   getCardChartData,
   getCardRequest,
   getCardSummary,
+  getCardTransfer,
 } from "@/api/services/card";
 
 export function useGetCards() {
@@ -47,6 +48,25 @@ export function useGetChartData() {
   const { data, error, isPending } = useQuery({
     queryKey: ["cardChartDataList"],
     queryFn: () => getCardChartData(),
+    retry: false,
+  });
+
+  if (error) {
+    // toast.error(error.message);
+    console.log(error);
+  }
+
+  return {
+    data: data,
+    error,
+    isPending,
+  };
+}
+
+export function useGetCardTransfer() {
+  const { data, error, isPending } = useQuery({
+    queryKey: ["cardTransfer"],
+    queryFn: () => getCardTransfer(),
     retry: false,
   });
 

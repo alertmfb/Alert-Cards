@@ -16,6 +16,9 @@ import { Search } from "lucide-react";
 import ExportDialog from "@/components/common/shared/Table/ExportDialog";
 import { DateRangePicker } from "@/components/common/shared/Table/DateRangePicker";
 import type { DateRange } from "react-day-picker";
+import { useGetCardTransfer } from "@/hooks";
+import TableLoader from "@/components/common/TableLoader";
+import type { CardTransfer } from "@/types/card";
 
 type FilterState = {
   search: string;
@@ -28,12 +31,7 @@ const CardTransfersTable = () => {
     deliveryStatus: "",
     dateRange: { from: undefined, to: undefined },
   });
-  // const [search, setSearch] = React.useState("");
-  // const [deliveryStatus, setDeliveryStatus] = React.useState("All");
-  // const [dateRange, setDateRange] = React.useState<DateRange>({
-  //   from: undefined,
-  //   to: undefined,
-  // });
+  const { data, isPending } = useGetCardTransfer();
 
   const handleExport = () => {
     toast.info("🚧 Exporting data...");
@@ -47,6 +45,18 @@ const CardTransfersTable = () => {
     console.log("Exporting with filters:", payload);
     toast.success("✅ Export complete (simulated)");
   };
+
+  const cardTransfers = data?.data || [];
+
+  const filteredData = React.useMemo(() => {
+    return cardTransfers?.filter((card: CardTransfer) => {
+      const matchesSearch =
+        `${card.customer?.customerName} ${card.customer?.accountNumber}`
+          .toLowerCase()
+          .includes(filters?.search?.toLowerCase());
+      return matchesSearch;
+    });
+  }, [cardTransfers, filters]);
 
   return (
     <div className="space-y-8">
@@ -84,7 +94,7 @@ const CardTransfersTable = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
-              <SelectItem value="delivered">Delivered</SelectItem>
+              <SelectItem value="IN_PRODUCTION">IN_PRODUCTION</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="failed">Failed</SelectItem>
             </SelectContent>
@@ -103,8 +113,11 @@ const CardTransfersTable = () => {
           <ExportDialog filters={filters} onExport={handleExport} />
         </div>
       </div>
-
-      <DataTable columns={cardTransferColumns} data={CardTransfers} />
+      {isPending ? (
+        <TableLoader />
+      ) : (
+        <DataTable columns={cardTransferColumns} data={filteredData} />
+      )}
     </div>
   );
 };

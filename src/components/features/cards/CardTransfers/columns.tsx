@@ -1,9 +1,9 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { CardTransfer } from "@/types";
 import { CardTransferActions } from "./ActionMenu";
 import { CustomStatus } from "@/components/common/shared/Table/CustomStatus";
 import { formatDateTime, maskPan } from "@/lib";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { CardTransfer } from "@/types/card";
 
 export const cardTransferColumns: ColumnDef<CardTransfer>[] = [
   {
@@ -28,32 +28,35 @@ export const cardTransferColumns: ColumnDef<CardTransfer>[] = [
   {
     header: "Customer Name",
     accessorKey: "customerName",
+    cell: ({ row }) => row.original?.customer?.customerName || "N/A",
   },
   {
     header: "PAN Number",
     accessorKey: "panNumber",
     cell: ({ row }) => {
-      const pan = maskPan(row.original.panNumber);
+      const pan = maskPan(row.original.pan);
       return pan;
     },
   },
   {
     header: "Card Scheme",
     accessorKey: "cardScheme",
+    cell: ({ row }) => row.original?.scheme || "N/A",
   },
   {
     header: "Card Variant",
     accessorKey: "cardVariant",
+    cell: ({ row }) => row.original?.variant || "N/A",
   },
-  {
-    header: "Expiry Date",
-    accessorKey: "expiryDate",
-  },
+  // {
+  //   header: "Expiry Date",
+  //   accessorKey: "expiryDate",
+  // },
   {
     header: "Approved Date",
     accessorKey: "approvedDate",
     cell: ({ row }) => {
-      const { date, time } = formatDateTime(row.original.approvedDate);
+      const { date, time } = formatDateTime(row.original.approvalDate);
       return (
         <div>
           <div>{date}</div>
@@ -66,14 +69,14 @@ export const cardTransferColumns: ColumnDef<CardTransfer>[] = [
     header: "Status",
     accessorKey: "status",
     cell: ({ row }) => {
-      const status = row.original.status;
+      const status = row.original.deliveryStatus;
 
       const variant =
         status === "approved"
           ? "success"
           : status === "declined"
-            ? "danger"
-            : "warning";
+          ? "danger"
+          : "warning";
 
       return <CustomStatus label={status} variant={variant} />;
     },
