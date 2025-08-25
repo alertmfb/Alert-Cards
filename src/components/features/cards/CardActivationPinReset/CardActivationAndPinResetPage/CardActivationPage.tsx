@@ -2,39 +2,42 @@ import { PageHeader } from "@/components/common/shared/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GoBackButton from "@/components/common/shared/GoBackButton";
 import type { CustomerData } from "@/components/features/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardBlock";
 import { CardActivatePreviewCard } from "./CardActivationPreviewCard";
 import { CardDetails } from "@/components/common/custom/CardDetails";
+import { useGetCustomerCardMutation } from "@/hooks";
 
 export default function CardActivation() {
   const [accountNumber, setAccountNumber] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+
+  const { getCustomerCard, data, isPending, isSuccess } =
+    useGetCustomerCardMutation();
 
   const customerData: CustomerData = {
-    customerName: "Victor Balogun",
-    accountNumber: "1122334455",
-    phoneNumber: "+234 913 943 4923",
+    customerName: data?.data?.customerName as string,
+    accountNumber: data?.data?.accountNumber as string,
+    phoneNumber: data?.data?.phoneNumber as string,
     panNumber: "5432 9087 5678 8100",
     cardScheme: "Afrigo",
-    cardVariant: "Alert Gold",
-    requesterNT: "victorbalogun@gmail.com",
-    requesterBranch: "VI",
-    pickupBranch: "Yaba",
-    approvedDate: "11/09/2025",
-    expiryDate: "11/2030",
-    cardStatus: "Delivered",
+    cardVariant: data?.data?.cardVariant as string,
+    requesterNT: data?.data?.requesterNt as string,
+    requesterBranch: data?.data?.requesterBranch as string,
+    pickupBranch: data?.data?.pickupBranch as string,
+    approvedDate: data?.data?.approvedDate as string,
+    expiryDate: data?.data?.expiryDate as string,
+    cardStatus: data?.data?.cardStatus as string,
     blockStatus: "Not Blocked",
     cardHolderName: "Victor Balogun",
-    activationStatus: "Pending",
+    activationStatus: data?.data?.activationStatus as string,
   };
 
+  console.log(data, "testttttttttinggggg");
   const handleVerify = () => {
-    // Simulate verification
-    setTimeout(() => {
-      setIsVerified(true);
-    }, 1000);
+    if (accountNumber === "") return;
+
+    getCustomerCard({ accountNumber, type: "ACTIVATION" });
   };
 
   return (
@@ -61,7 +64,7 @@ export default function CardActivation() {
             <Button
               size="sm"
               onClick={handleVerify}
-              disabled={!accountNumber}
+              disabled={isPending}
               className="absolute top-1/2 -translate-y-1/2 right-2 text-xs"
             >
               Verify
@@ -71,7 +74,7 @@ export default function CardActivation() {
       </div>
 
       {/* Verification Result */}
-      {isVerified && (
+      {isSuccess && data?.data && (
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <CardActivatePreviewCard
             className="col-span-full lg:col-span-3"

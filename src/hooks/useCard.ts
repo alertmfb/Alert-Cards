@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   getCardChartData,
   getCardRequest,
   getCardSummary,
   getCardTransfer,
+  getCustomerCard,
 } from "@/api/services/card";
 
 export function useGetCards() {
@@ -79,5 +80,30 @@ export function useGetCardTransfer() {
     data: data,
     error,
     isPending,
+  };
+}
+
+export function useGetCustomerCardMutation() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: ({
+      accountNumber,
+      type,
+    }: {
+      accountNumber: string;
+      type: string;
+    }) => getCustomerCard(accountNumber, type),
+    retry: false,
+    onError: (error) => {
+      console.error(error);
+      // toast.error(error.message);
+    },
+  });
+
+  return {
+    getCustomerCard: mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
   };
 }

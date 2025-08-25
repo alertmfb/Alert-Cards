@@ -67,6 +67,10 @@ export const hopNavItems = [
     items: [
       { title: "All Cards", url: "/cards/all-cards" },
       { title: "Card Requests", url: "/cards/card-requests" },
+      {
+        title: "Activation/ PIN Reset",
+        url: "/cards/activation-pin-reset",
+      },
       { title: "Block/ Unblock Cards", url: "/cards/block-unblock-cards" },
     ],
   },

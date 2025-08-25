@@ -3,19 +3,20 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { branchOptions } from "@/lib/data";
 import { cn } from "@/lib";
+import type { CustomerData } from "@/components/features";
 
 /* ---------- Types ---------- */
-export interface CardDetailsData {
-  customerName: string;
-  accountNumber: string;
-  phoneNumber: string;
-  pickupBranch: string; // branch ID that matches branchOptions
-  approvedDate: string;
-  cardStatus: string; // e.g. "Delivered", "Pending"
-  activationStatus: "Activated" | "Deactivated" | "Pending";
-  requesterNT: string;
-  requesterBranch: string;
-}
+// export interface CardDetailsData {
+//   customerName: string;
+//   accountNumber: string;
+//   phoneNumber: string;
+//   pickupBranch: string; // branch ID that matches branchOptions
+//   approvedDate: string;
+//   cardStatus: string; // e.g. "Delivered", "Pending"
+//   activationStatus: "Activated" | "Deactivated" | "Pending";
+//   requesterNT: string;
+//   requesterBranch: string;
+// }
 
 /* ---------- Helpers ---------- */
 function getStatusBadgeStyle(status: string, type: "activation" | "card") {
@@ -35,7 +36,7 @@ export function CardDetails({
   data,
   className,
 }: {
-  data: CardDetailsData;
+  data: CustomerData;
   className?: string;
 }) {
   const {

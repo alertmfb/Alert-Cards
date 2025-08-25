@@ -65,3 +65,26 @@ export interface CardTransfer {
     transferStatus: string;
   };
 }
+
+export interface CustomerCardResponse {
+  status: string;
+  data: CustomerCard;
+  message: string;
+}
+
+export interface CustomerCard {
+  customerName: string;
+  accountNumber: string;
+  phoneNumber: string;
+  cardVariant: string;
+  pickupBranch: string;
+  approvedDate: string;
+  cardStatus: string;
+  activationStatus: string;
+  cardId: string;
+  nameOnCard: string;
+  expiryDate: string;
+  serialNo: string;
+  requesterNt: string;
+  requesterBranch: string;
+}

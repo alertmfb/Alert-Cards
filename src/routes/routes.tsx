@@ -1,6 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "./_layout";
 import IndexRoute from "./_index";
 import NotFoundRoute from "./[...404]";

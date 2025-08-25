@@ -25,7 +25,7 @@ export interface CustomerData {
   cardStatus: string;
   blockStatus: string;
   cardHolderName: string;
-  activationStatus: "Activated" | "Deactivated" | "Pending";
+  activationStatus: string;
 }
 
 type BlockReason =
