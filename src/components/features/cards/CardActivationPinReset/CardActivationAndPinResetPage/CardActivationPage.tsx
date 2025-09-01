@@ -33,7 +33,6 @@ export default function CardActivation() {
     activationStatus: data?.data?.activationStatus as string,
   };
 
-  console.log(data, "testttttttttinggggg");
   const handleVerify = () => {
     if (accountNumber === "") return;
 

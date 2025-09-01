@@ -35,8 +35,6 @@ const CardActivationTable = () => {
     dateRange: { from: undefined, to: undefined },
   });
 
-  console.log(data, "Daniel");
-
   const activationRequests = data?.data?.requests || [];
   const filteredData = React.useMemo(() => {
     return activationRequests?.filter((card: ActivationRequest) => {

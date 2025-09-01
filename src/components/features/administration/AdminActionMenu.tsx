@@ -43,7 +43,6 @@ import {
 } from "@/api/mutations/users";
 
 export const AdminActionMenu = ({ admin }: { admin: ServerUser }) => {
-  console.log(admin, "full details");
   const [dialog, setDialog] = useState<
     null | "edit" | "suspend" | "activate" | "view"
   >(null);

@@ -27,7 +27,7 @@ const BlockCards = () => {
     // TODO: Replace with export endpoint
     toast.success("✅ Export complete (simulated)");
   };
-  console.log(data, "phone");
+
   const blockRequests = data?.data || [];
   const filteredData = React.useMemo(() => {
     return blockRequests?.filter((card: CardblockData) => {
