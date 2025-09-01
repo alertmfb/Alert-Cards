@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Search } from "lucide-react";
 
@@ -14,8 +14,8 @@ import { useGetCardBlocks } from "@/hooks";
 import TableLoader from "@/components/common/TableLoader";
 
 const BlockCards = () => {
-  const type = "BLOCK";
-  const { data, isPending } = useGetCardBlocks(type);
+  const [type] = useState("BLOCK");
+  const { data, isPending, refetch } = useGetCardBlocks(type);
   const [filters, setFilters] = useState<CardFilterType>({
     search: "",
     dateRange: { from: null, to: null },
@@ -27,6 +27,10 @@ const BlockCards = () => {
     // TODO: Replace with export endpoint
     toast.success("✅ Export complete (simulated)");
   };
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const blockRequests = data?.data || [];
   const filteredData = React.useMemo(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,8 @@ import { useGetCardBlocks } from "@/hooks";
 import TableLoader from "@/components/common/TableLoader";
 
 const UnblockCards = () => {
-  const type = "UNBLOCK";
-  const { data, isPending } = useGetCardBlocks(type);
+  const [type] = useState("UNBLOCK");
+  const { data, isPending, refetch } = useGetCardBlocks(type);
   const [filters, setFilters] = useState<CardFilterType>({
     search: "",
     dateRange: { from: undefined, to: undefined },
@@ -37,6 +37,9 @@ const UnblockCards = () => {
     });
   }, [unBlockRequests]);
 
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
   return (
     <div className="space-y-4">
       {/* Filters */}

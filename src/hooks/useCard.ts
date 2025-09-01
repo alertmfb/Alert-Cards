@@ -195,7 +195,7 @@ export function useGetCardActivations() {
   };
 }
 export function useGetCardBlocks(type: string) {
-  const { data, error, isPending } = useQuery({
+  const { data, error, isPending, refetch } = useQuery({
     queryKey: ["cardBlockList"],
     queryFn: () => getCardBlocks(type),
     retry: false,
@@ -208,6 +208,7 @@ export function useGetCardBlocks(type: string) {
   return {
     data: data,
     error,
+    refetch,
     isPending,
   };
 }
