@@ -17,6 +17,9 @@ import { Input } from "@/components/ui/input";
 import { DateRangePicker } from "@/components/common/shared/Table/DateRangePicker";
 import ExportDialog from "@/components/common/shared/Table/ExportDialog";
 import type { DateRange } from "react-day-picker";
+import { useGetCardActivations } from "@/hooks";
+import TableLoader from "@/components/common/TableLoader";
+import type { ActivationRequest } from "@/types";
 
 type FilterState = {
   search: string;
@@ -25,11 +28,30 @@ type FilterState = {
 };
 
 const CardActivationTable = () => {
+  const { data, isPending } = useGetCardActivations();
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     deliveryStatus: "",
     dateRange: { from: undefined, to: undefined },
   });
+
+  console.log(data, "Daniel");
+
+  const activationRequests = data?.data?.requests || [];
+  const filteredData = React.useMemo(() => {
+    return activationRequests?.filter((card: ActivationRequest) => {
+      const matchesSearch = `${card.card?.customer?.customerName} `
+        .toLowerCase()
+        .includes(filters?.search?.toLowerCase());
+
+      const matchesStatus =
+        filters?.deliveryStatus === "All" ||
+        (card?.card?.status ? "Active" : "Inactive") ===
+          filters?.deliveryStatus;
+
+      return matchesSearch;
+    });
+  }, [activationRequests]);
 
   const handleExport = () => {
     toast.info("📦 Exporting filtered data...");
@@ -95,7 +117,11 @@ const CardActivationTable = () => {
       </div>
 
       {/* Table */}
-      <DataTable columns={cardActivationColumns} data={cardActivationData} />
+      {isPending ? (
+        <TableLoader />
+      ) : (
+        <DataTable columns={cardActivationColumns} data={filteredData} />
+      )}
     </div>
   );
 };

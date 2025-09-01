@@ -2,18 +2,17 @@ import CardActivationAndPinReset from "@/components/features/cards/CardActivatio
 import CardActivationPinResetTable from "@/components/features/cards/CardActivationPinReset/CardActivationPinResetTable";
 import React from "react";
 import { useUserRolesStore } from "@/store/slices/useUserRolesStore";
+import { useAuth } from "@/hooks";
 
 const ActivationPinReset = () => {
-  const { userRole } = useUserRolesStore();
+  const { user } = useAuth();
   return (
     <div className="p-4">
-      {userRole === "initiator" ? (
+      {user?.role === "CSO" ? (
         <CardActivationAndPinReset />
       ) : (
         <CardActivationPinResetTable />
       )}
-      {/* <CardActivationPinResetTable /> */}
-      {/* <CardActivationAndPinReset /> */}
     </div>
   );
 };

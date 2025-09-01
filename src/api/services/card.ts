@@ -1,5 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import type {
+  BlockCardResponse,
+  CardActivationResponse,
   CardResponse,
   CardSummaryResponse,
   CardTransferResponse,
@@ -53,6 +55,13 @@ export const getCustomerCard = async (
 //   }
 // },
 
+export const getCardActivations = async (): Promise<CardActivationResponse> => {
+  const res = await axiosInstance.get<CardActivationResponse>(
+    `/cards/activations`
+  );
+  return res.data;
+};
+
 export const activateCard = async (data: {
   cardId: string;
 }): Promise<{ cardId: string }> => {
@@ -84,6 +93,15 @@ export const activateCardApproval = async (data: {
 };
 
 // BLOCK
+
+export const getCardBlocks = async (
+  type: string
+): Promise<BlockCardResponse> => {
+  const res = await axiosInstance.get<BlockCardResponse>(
+    `/cards/block/requests?type=${type}`
+  );
+  return res.data;
+};
 export const blockCard = async (data: {
   cardId: string;
   type: string;

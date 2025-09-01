@@ -89,3 +89,67 @@ export interface CustomerCard {
   requesterBranch: string;
   pan: string;
 }
+
+export interface BlockCardResponse {
+  status: string;
+  data: CardblockData[];
+  message: string;
+}
+
+interface CardRequest {
+  pan: string;
+  scheme: string;
+  variant: string;
+}
+
+interface Customer {
+  customerName: string;
+  accountNumber: string;
+}
+
+interface Card {
+  customer: Customer;
+  cardRequest: CardRequest;
+  expiryDate: string;
+}
+
+export interface CardblockData {
+  id: string;
+  reason: string;
+  createdAt: string;
+  requestType: string;
+  card: Card;
+}
+
+interface ActivationCardRequest {
+  nameOnCard: string;
+  scheme: string;
+}
+
+interface ActivationCustomer {
+  customerName: string;
+  phoneNumber: string;
+  accountNumber: string;
+  email: string;
+}
+
+interface ActivationCard {
+  customer: ActivationCustomer;
+  cardRequest: ActivationCardRequest;
+  maskedPan: string;
+  status: string;
+}
+
+export interface ActivationRequest {
+  id: string;
+  card: ActivationCard;
+  createdAt: string;
+}
+
+export interface CardActivationResponse {
+  status: string;
+  data: {
+    requests: ActivationRequest[];
+  };
+  message: string;
+}

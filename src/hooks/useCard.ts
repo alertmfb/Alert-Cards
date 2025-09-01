@@ -3,6 +3,8 @@ import {
   activateCard,
   activateCardApproval,
   blockCard,
+  getCardActivations,
+  getCardBlocks,
   getCardChartData,
   getCardRequest,
   getCardSummary,
@@ -172,5 +174,40 @@ export function useBlockCard() {
     error,
     isPending,
     isSuccess,
+  };
+}
+
+export function useGetCardActivations() {
+  const { data, error, isPending } = useQuery({
+    queryKey: ["cardActivationList"],
+    queryFn: () => getCardActivations(),
+    retry: false,
+  });
+
+  if (error) {
+    console.log(error);
+  }
+
+  return {
+    data: data,
+    error,
+    isPending,
+  };
+}
+export function useGetCardBlocks(type: string) {
+  const { data, error, isPending } = useQuery({
+    queryKey: ["cardBlockList"],
+    queryFn: () => getCardBlocks(type),
+    retry: false,
+  });
+
+  if (error) {
+    console.log(error);
+  }
+
+  return {
+    data: data,
+    error,
+    isPending,
   };
 }

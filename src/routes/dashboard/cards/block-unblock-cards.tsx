@@ -1,12 +1,12 @@
 import BlockAndUnblockCards from "@/components/features/cards/BlockAndUnblockCards/BlockAndUnblockCards";
 import CardBlockAndUnblock from "@/components/features/cards/BlockAndUnblockCards/BlockAndUnblockServices/CardBlockAndUnblock";
-import { useUserRolesStore } from "@/store/slices/useUserRolesStore";
+import { useAuth } from "@/hooks";
 
 const BlockUnblockCards = () => {
-  const { userRole } = useUserRolesStore();
+  const { user } = useAuth();
   return (
     <div className="p-4">
-      {userRole === "initiator" ? (
+      {user?.role === "CSO" ? (
         <CardBlockAndUnblock />
       ) : (
         <BlockAndUnblockCards />

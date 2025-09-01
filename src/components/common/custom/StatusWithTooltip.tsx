@@ -9,7 +9,7 @@ import { Info } from "lucide-react";
 import type { CardActivationStatus } from "@/types";
 
 // ✅ Badge + tooltip component
-const StatusWithTooltip = ({ status }: { status: CardActivationStatus }) => {
+const StatusWithTooltip = ({ status }: { status: string }) => {
   const tooltipText =
     status === "Pending CA"
       ? "Pending Card Activation"

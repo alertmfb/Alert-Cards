@@ -29,12 +29,12 @@ import { Button } from "@/components/ui/button";
 // } from "components/ui/select";
 // import { Label } from "@/components/ui/label";
 // import { Textarea } from "@/components/ui/textarea";
-import type { CardActivationType } from "@/types";
+import type { ActivationRequest, CardActivationType } from "@/types";
 
 export const CardActivationActionMenu = ({
   item,
 }: {
-  item: CardActivationType;
+  item: ActivationRequest;
 }) => {
   const [dialogType, setDialogType] = useState<
     null | "approve" | "decline" | "reason"

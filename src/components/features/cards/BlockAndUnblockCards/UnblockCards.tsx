@@ -4,12 +4,16 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { DateRangePicker } from "@/components/common/shared/Table/DateRangePicker";
 import ExportDialog from "@/components/common/shared/Table/ExportDialog";
-import type { CardFilterType } from "@/types";
+import type { CardblockData, CardFilterType } from "@/types";
 import { unblockCardData } from "@/lib/data";
 import { getCardActionColumns } from "./columns";
 import { DataTable } from "@/components/common/shared/Table/DataTable";
+import { useGetCardBlocks } from "@/hooks";
+import TableLoader from "@/components/common/TableLoader";
 
 const UnblockCards = () => {
+  const type = "UNBLOCK";
+  const { data, isPending } = useGetCardBlocks(type);
   const [filters, setFilters] = useState<CardFilterType>({
     search: "",
     dateRange: { from: undefined, to: undefined },
@@ -21,6 +25,17 @@ const UnblockCards = () => {
     // TODO: Replace with export endpoint
     toast.success("✅ Export complete (simulated)");
   };
+
+  const unBlockRequests = data?.data || [];
+  const filteredData = React.useMemo(() => {
+    return unBlockRequests?.filter((card: CardblockData) => {
+      const matchesSearch = `${card.card?.customer?.customerName} `
+        .toLowerCase()
+        .includes(filters?.search?.toLowerCase());
+
+      return matchesSearch;
+    });
+  }, [unBlockRequests]);
 
   return (
     <div className="space-y-4">
@@ -47,8 +62,8 @@ const UnblockCards = () => {
               setFilters((prev) => ({
                 ...prev,
                 dateRange: {
-                  from: dateRange.from ?? undefined,
-                  to: dateRange.to ?? undefined,
+                  from: dateRange.from ?? null,
+                  to: dateRange.to ?? null,
                 },
               }))
             }
@@ -57,13 +72,17 @@ const UnblockCards = () => {
         </div>
       </div>
 
-      {/* TODO: Unblocked cards table or list */}
+      {/* TODO: Blocked cards table or list */}
       {/* <div className="border rounded-md p-4 text-sm text-muted-foreground"> */}
-      {/* Unblocked cards list will go here. */}
-      <DataTable
-        data={unblockCardData}
-        columns={getCardActionColumns("unblock")}
-      />
+      {/* Blocked cards list will go here. */}
+      {isPending ? (
+        <TableLoader />
+      ) : (
+        <DataTable
+          data={filteredData}
+          columns={getCardActionColumns("block")}
+        />
+      )}
       {/* </div> */}
     </div>
   );

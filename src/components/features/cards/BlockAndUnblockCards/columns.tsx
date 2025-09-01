@@ -1,23 +1,25 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { maskPan, formatDateTime } from "@/lib";
-import type { CardBlockUnblockRecord } from "@/types";
+import type { CardblockData, CardBlockUnblockRecord } from "@/types";
 import { BlockCardActionMenu, UnblockCardActionMenu } from "./ActionMenu";
 
 export const getCardActionColumns = (
   actionType: "block" | "unblock"
-): ColumnDef<CardBlockUnblockRecord>[] => [
+): ColumnDef<CardblockData>[] => [
   {
     accessorKey: "customerName",
     header: "Customer Name",
+    cell: ({ row }) => row.original?.card?.customer?.customerName || "N/A",
   },
   {
     accessorKey: "accountNumber",
     header: "Account Number",
+    cell: ({ row }) => row.original?.card?.customer?.accountNumber || "N/A",
   },
   {
     accessorKey: "panNumber",
     header: "PAN Number",
-    cell: ({ row }) => maskPan(row.original.panNumber),
+    cell: ({ row }) => maskPan(row.original.card.cardRequest.pan),
   },
   // {
   //   accessorKey: "cardScheme",
@@ -30,21 +32,21 @@ export const getCardActionColumns = (
   {
     accessorKey: "expiryDate",
     header: "Expiry Date",
-    // cell: ({ row }) => {
-    //   const { date, time } = formatDateTime(row.original.expiryDate);
-    //   return (
-    //     <div>
-    //       <div>{date}</div>
-    //       <div className="text-xs text-red-600">{time}</div>
-    //     </div>
-    //   );
-    // },
+    cell: ({ row }) => {
+      const { date, time } = formatDateTime(row.original?.card?.expiryDate);
+      return (
+        <div>
+          <div>{date}</div>
+          {/* <div className="text-xs text-red-600">{time}</div> */}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "dateEntered",
     header: "Date Entered",
     cell: ({ row }) => {
-      const { date, time } = formatDateTime(row.original.dateEntered);
+      const { date, time } = formatDateTime(row.original?.createdAt);
       return (
         <div>
           <div>{date}</div>

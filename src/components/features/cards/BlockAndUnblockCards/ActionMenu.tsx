@@ -25,25 +25,21 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { CardBlockUnblockRecord } from "@/types";
+import type { CardblockData } from "@/types";
 import { maskPan } from "@/lib";
 import { ViewCustomerDetailsDialog } from "@/components/common/shared/Table/ViewDetailsDialog";
 
-const getDetailsForView = (record: CardBlockUnblockRecord) => [
-  { label: "Customer Name", value: record.customerName },
-  { label: "Account Number", value: record.accountNumber },
-  { label: "PAN Number", value: maskPan(record.panNumber) },
-  { label: "Card Scheme", value: record.cardScheme },
-  { label: "Card Variant", value: record.cardVariant },
-  { label: "Expiry Date", value: record.expiryDate },
-  { label: "Date Entered", value: record.dateEntered },
+const getDetailsForView = (record: CardblockData) => [
+  { label: "Customer Name", value: record?.card?.customer?.customerName },
+  { label: "Account Number", value: record?.card?.customer?.accountNumber },
+  { label: "PAN Number", value: maskPan(record?.card?.cardRequest?.pan) },
+  { label: "Card Scheme", value: record?.card?.cardRequest?.scheme },
+  { label: "Card Variant", value: record?.card?.cardRequest?.variant },
+  { label: "Expiry Date", value: record?.card?.expiryDate },
+  { label: "Date Entered", value: record?.createdAt },
   { label: "Reason", value: record.reason },
 ];
-export const BlockCardActionMenu = ({
-  record,
-}: {
-  record: CardBlockUnblockRecord;
-}) => {
+export const BlockCardActionMenu = ({ record }: { record: CardblockData }) => {
   const [open, setOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
   const [reason, setReason] = useState("");
@@ -51,7 +47,7 @@ export const BlockCardActionMenu = ({
 
   const handleBlock = () => {
     // Add your API call logic here
-    toast.error(`Card blocked: ${record.customerName}`);
+    toast.error(`Card blocked: ${record?.card?.customer?.customerName}`);
     setOpen(false);
   };
 
@@ -134,14 +130,14 @@ export const BlockCardActionMenu = ({
 export const UnblockCardActionMenu = ({
   record,
 }: {
-  record: CardBlockUnblockRecord;
+  record: CardblockData;
 }) => {
   const [open, setOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
 
   const handleUnblock = () => {
     // Add your API call logic here
-    toast.success(`Card unblocked: ${record.customerName}`);
+    toast.success(`Card unblocked: ${record?.card?.customer?.customerName}`);
     setOpen(false);
   };
 
@@ -171,7 +167,7 @@ export const UnblockCardActionMenu = ({
           </DialogHeader>
           <p className="text-sm text-muted-foreground mb-4">
             Are you sure you want to unblock the card for{" "}
-            <strong>{record.customerName}</strong>?
+            <strong>{record?.card?.customer?.customerName}</strong>?
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>

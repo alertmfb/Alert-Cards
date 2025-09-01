@@ -6,12 +6,16 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { DateRangePicker } from "@/components/common/shared/Table/DateRangePicker";
 import ExportDialog from "@/components/common/shared/Table/ExportDialog";
-import type { CardFilterType } from "@/types";
+import type { CardblockData, CardFilterType } from "@/types";
 import { DataTable } from "@/components/common/shared/Table/DataTable";
 import { blockCardData } from "@/lib/data";
 import { getCardActionColumns } from "./columns";
+import { useGetCardBlocks } from "@/hooks";
+import TableLoader from "@/components/common/TableLoader";
 
 const BlockCards = () => {
+  const type = "BLOCK";
+  const { data, isPending } = useGetCardBlocks(type);
   const [filters, setFilters] = useState<CardFilterType>({
     search: "",
     dateRange: { from: null, to: null },
@@ -23,6 +27,17 @@ const BlockCards = () => {
     // TODO: Replace with export endpoint
     toast.success("✅ Export complete (simulated)");
   };
+  console.log(data, "phone");
+  const blockRequests = data?.data || [];
+  const filteredData = React.useMemo(() => {
+    return blockRequests?.filter((card: CardblockData) => {
+      const matchesSearch = `${card.card?.customer?.customerName} `
+        .toLowerCase()
+        .includes(filters?.search?.toLowerCase());
+
+      return matchesSearch;
+    });
+  }, [blockRequests]);
 
   return (
     <div className="space-y-4">
@@ -62,7 +77,14 @@ const BlockCards = () => {
       {/* TODO: Blocked cards table or list */}
       {/* <div className="border rounded-md p-4 text-sm text-muted-foreground"> */}
       {/* Blocked cards list will go here. */}
-      <DataTable data={blockCardData} columns={getCardActionColumns("block")} />
+      {isPending ? (
+        <TableLoader />
+      ) : (
+        <DataTable
+          data={filteredData}
+          columns={getCardActionColumns("block")}
+        />
+      )}
       {/* </div> */}
     </div>
   );
