@@ -87,4 +87,5 @@ export interface CustomerCard {
   serialNo: string;
   requesterNt: string;
   requesterBranch: string;
+  pan: string;
 }

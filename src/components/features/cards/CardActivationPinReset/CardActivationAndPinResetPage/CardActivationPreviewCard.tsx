@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 
 interface CardActivatePreviewCardProps {
   cardScheme: string;
+  cardId: string;
   panNumber: string;
   cardHolderName: string;
   expiryDate: string;
@@ -19,6 +20,7 @@ interface CardActivatePreviewCardProps {
 
 export function CardActivatePreviewCard({
   cardScheme,
+  cardId,
   panNumber,
   cardHolderName,
   expiryDate,
@@ -68,6 +70,7 @@ export function CardActivatePreviewCard({
         <div className="space-y-4">
           {/* Activate Card Switch */}
           <ActivateCardSwitch
+            cardId={cardId}
             activated={cardActivated}
             onChange={setCardActivated}
           />

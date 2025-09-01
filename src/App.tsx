@@ -3,6 +3,7 @@ import { RouterProvider } from "react-router-dom";
 import { initializeAxiosAuth } from "./lib";
 import { useAuthStore } from "./store";
 import { router } from "./routes/routes";
+import { Toaster } from "sonner";
 
 function App() {
   useEffect(() => {
@@ -12,6 +13,7 @@ function App() {
   }, []);
   return (
     <>
+      <Toaster />
       <RouterProvider router={router} />
     </>
   );

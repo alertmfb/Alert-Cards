@@ -9,6 +9,7 @@ import GoBackButton from "@/components/common/shared/GoBackButton";
 import { toast } from "sonner";
 import { CardDetails } from "@/components/common/custom/CardDetails";
 import { CardPreviewCard } from "./CardPreview";
+import { useGetCustomerCardMutation } from "@/hooks";
 
 export interface CustomerData {
   customerName: string;
@@ -39,27 +40,28 @@ type BlockReason =
 export default function BlockCard() {
   const [accountNumber, setAccountNumber] = useState<string>("");
   const [isVerified, setIsVerified] = useState<boolean>(false);
+  const { getCustomerCard, data, isPending, isSuccess } =
+    useGetCustomerCardMutation();
   const [cardBlocked, setCardBlocked] = useState<boolean>(false);
   const [blockReason, setBlockReason] = useState<BlockReason | "">("");
   const navigate = useNavigate();
 
-  // Mock customer data - in real app, this would come from API
   const customerData: CustomerData = {
-    customerName: "Emeka Chukwu",
-    accountNumber: "1122334455",
-    phoneNumber: "+234 913 943 4923",
-    panNumber: "5432 1234 5678 8100",
-    cardScheme: "Mastercard",
-    cardVariant: "Alert Gold",
-    requesterNT: "victorbalogun@gmail.com",
-    requesterBranch: "VI",
-    pickupBranch: "Yaba",
-    approvedDate: "11/09/2025",
-    expiryDate: "10/30",
-    cardStatus: "Active",
+    customerName: data?.data?.customerName as string,
+    accountNumber: data?.data?.accountNumber as string,
+    phoneNumber: data?.data?.phoneNumber as string,
+    panNumber: data?.data?.pan as string,
+    cardScheme: "Afrigo",
+    cardVariant: data?.data?.cardVariant as string,
+    requesterNT: data?.data?.requesterNt as string,
+    requesterBranch: data?.data?.requesterBranch as string,
+    pickupBranch: data?.data?.pickupBranch as string,
+    approvedDate: data?.data?.approvedDate as string,
+    expiryDate: data?.data?.expiryDate as string,
+    cardStatus: data?.data?.cardStatus as string,
     blockStatus: "Not Blocked",
-    cardHolderName: "Victor Balogun",
-    activationStatus: "Activated",
+    cardHolderName: data?.data?.customerName as string,
+    activationStatus: data?.data?.activationStatus as string,
   };
 
   const handleVerify = (): void => {
@@ -68,20 +70,7 @@ export default function BlockCard() {
       return;
     }
 
-    // Simulate verification with loading
-    toast.promise(
-      new Promise<void>((resolve) => {
-        setTimeout(() => {
-          setIsVerified(true);
-          resolve();
-        }, 1000);
-      }),
-      {
-        loading: "Verifying account...",
-        success: "Account verified successfully",
-        error: "Failed to verify account",
-      }
-    );
+    getCustomerCard({ accountNumber, type: "BLOCK" });
   };
 
   const handleProceed = (): void => {
@@ -138,7 +127,7 @@ export default function BlockCard() {
                 <Button
                   size="sm"
                   onClick={handleVerify}
-                  disabled={!accountNumber.trim()}
+                  disabled={isPending}
                   className="absolute top-1/2 -translate-y-1/2 right-2 text-xs font-medium"
                 >
                   Verify
@@ -150,7 +139,7 @@ export default function BlockCard() {
       </Card>
 
       {/* Verification Result */}
-      {isVerified && (
+      {isSuccess && data?.data && (
         <div className="">
           {/* Card Display and Customer Info */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -160,6 +149,7 @@ export default function BlockCard() {
               panNumber={customerData.panNumber}
               cardHolderName={customerData.cardHolderName}
               expiryDate={customerData.expiryDate}
+              cardId={data?.data?.cardId as string}
             />
             <CardDetails
               className="col-span-full lg:col-span-2"

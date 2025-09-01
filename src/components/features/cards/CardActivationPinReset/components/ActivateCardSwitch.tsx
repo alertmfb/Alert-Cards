@@ -12,16 +12,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { CircleCheck } from "lucide-react";
+import { useActivateCard } from "@/hooks";
 
 export function ActivateCardSwitch({
+  cardId,
   activated,
   onChange,
 }: {
+  cardId: string;
   activated: boolean;
   onChange: (value: boolean) => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const { mutate, data, isPending, isSuccess } = useActivateCard();
   const handleSwitchChange = (checked: boolean) => {
     if (checked) {
       setDialogOpen(true);
@@ -33,8 +36,9 @@ export function ActivateCardSwitch({
 
   const handleConfirm = () => {
     onChange(true);
-    toast.success("Card activation confirmed.");
-    setDialogOpen(false);
+    mutate({ cardId });
+    // toast.success("Card activation confirmed.");
+    // setDialogOpen(false);
   };
 
   return (

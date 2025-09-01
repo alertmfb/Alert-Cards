@@ -52,3 +52,51 @@ export const getCustomerCard = async (
 //     throw error;
 //   }
 // },
+
+export const activateCard = async (data: {
+  cardId: string;
+}): Promise<{ cardId: string }> => {
+  try {
+    const response = await axiosInstance.post<any>(
+      "/cards/activations/request",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Card activation API error:", error);
+    throw error;
+  }
+};
+
+export const activateCardApproval = async (data: {
+  activationRequestId: string;
+}): Promise<{ activationRequestId: string }> => {
+  try {
+    const response = await axiosInstance.post<any>(
+      "/cards/activations/approve",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Card activation API error:", error);
+    throw error;
+  }
+};
+
+// BLOCK
+export const blockCard = async (data: {
+  cardId: string;
+  type: string;
+  reason: string;
+}): Promise<any> => {
+  try {
+    const response = await axiosInstance.post<any>(
+      "/cards/block/requests",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Card block API error:", error);
+    throw error;
+  }
+};

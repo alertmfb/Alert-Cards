@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { useBlockCard } from "@/hooks";
 
 interface CardPreviewCardProps {
   cardScheme: string;
@@ -23,6 +24,7 @@ interface CardPreviewCardProps {
   cardHolderName: string;
   expiryDate: string;
   className?: string;
+  cardId: string;
 }
 
 type BlockReason =
@@ -39,43 +41,31 @@ export function CardPreviewCard({
   cardHolderName,
   expiryDate,
   className,
+  cardId,
 }: CardPreviewCardProps) {
-  const navigate = useNavigate();
   const [cardBlocked, setCardBlocked] = useState<boolean>(false);
   const [blockReason, setBlockReason] = useState<BlockReason | "">("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { mutate, data, isPending, isSuccess } = useBlockCard();
   const handleBlockReasonChange = (value: string): void => {
     setBlockReason(value as BlockReason);
   };
 
   const handleProceed = async (): Promise<void> => {
     if (!cardBlocked) {
-      toast.error("Please block the card first.");
+      toast("Please block the card first.");
       return;
     }
 
     if (!blockReason) {
-      toast.error("Please select a reason for blocking.");
+      toast("Please select a reason for blocking.");
       return;
     }
 
     try {
-      setIsSubmitting(true);
-
-      // TODO: Call API to block the card here
-
-      toast.success(
-        `Card has been blocked successfully. Reason: ${blockReason}`
-      );
-
-      // Optional slight delay for better UX
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      mutate({ cardId: cardId, type: "BLOCK", reason: blockReason });
     } catch (error) {
       toast.error("Failed to block the card. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
   return (
@@ -131,10 +121,10 @@ export function CardPreviewCard({
           <div className="flex justify-end">
             <Button
               onClick={handleProceed}
-              disabled={!cardBlocked || !blockReason || isSubmitting}
+              disabled={!cardBlocked || !blockReason || isPending}
               variant="destructive"
             >
-              {isSubmitting ? "Processing..." : "Block Card"}
+              {isPending ? "Processing..." : "Block Card"}
             </Button>
           </div>
         </div>

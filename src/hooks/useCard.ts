@@ -1,11 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  activateCard,
+  activateCardApproval,
+  blockCard,
   getCardChartData,
   getCardRequest,
   getCardSummary,
   getCardTransfer,
   getCustomerCard,
 } from "@/api/services/card";
+import { toast } from "sonner";
 
 export function useGetCards() {
   const { data, error, isPending } = useQuery({
@@ -93,14 +97,77 @@ export function useGetCustomerCardMutation() {
       type: string;
     }) => getCustomerCard(accountNumber, type),
     retry: false,
-    onError: (error) => {
-      console.error(error);
-      // toast.error(error.message);
+    onError: (error: any) => {
+      toast(error?.response?.data?.message);
     },
   });
 
   return {
     getCustomerCard: mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useActivateCard() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: activateCard,
+
+    onSuccess() {
+      toast.success("Card activation successful");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useActivateCardApproval() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: activateCardApproval,
+
+    onSuccess() {
+      toast.success("Card approved successful");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useBlockCard() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: blockCard,
+
+    onSuccess() {
+      toast.success("Card block successful");
+    },
+    onError(error: any) {
+      console.log(error?.response);
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
     data,
     error,
     isPending,

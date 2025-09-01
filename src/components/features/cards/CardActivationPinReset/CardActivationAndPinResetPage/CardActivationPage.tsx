@@ -19,7 +19,7 @@ export default function CardActivation() {
     customerName: data?.data?.customerName as string,
     accountNumber: data?.data?.accountNumber as string,
     phoneNumber: data?.data?.phoneNumber as string,
-    panNumber: "5432 9087 5678 8100",
+    panNumber: data?.data?.pan as string,
     cardScheme: "Afrigo",
     cardVariant: data?.data?.cardVariant as string,
     requesterNT: data?.data?.requesterNt as string,
@@ -29,7 +29,7 @@ export default function CardActivation() {
     expiryDate: data?.data?.expiryDate as string,
     cardStatus: data?.data?.cardStatus as string,
     blockStatus: "Not Blocked",
-    cardHolderName: "Victor Balogun",
+    cardHolderName: data?.data?.customerName as string,
     activationStatus: data?.data?.activationStatus as string,
   };
 
@@ -82,6 +82,7 @@ export default function CardActivation() {
             panNumber={customerData.panNumber}
             cardHolderName={customerData.cardHolderName}
             expiryDate={customerData.expiryDate}
+            cardId={data?.data?.cardId as string}
           />
           <CardDetails
             className="col-span-full lg:col-span-2"

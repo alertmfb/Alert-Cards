@@ -21,7 +21,7 @@ import type { CustomerData } from "@/components/features";
 /* ---------- Helpers ---------- */
 function getStatusBadgeStyle(status: string, type: "activation" | "card") {
   if (type === "activation") {
-    return status === "Activated"
+    return status === "ACTIVATED"
       ? "bg-green-100 text-green-700"
       : "bg-red-100 text-red-700";
   }
