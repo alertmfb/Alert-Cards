@@ -78,9 +78,6 @@ const BlockCards = () => {
         </div>
       </div>
 
-      {/* TODO: Blocked cards table or list */}
-      {/* <div className="border rounded-md p-4 text-sm text-muted-foreground"> */}
-      {/* Blocked cards list will go here. */}
       {isPending ? (
         <TableLoader />
       ) : (

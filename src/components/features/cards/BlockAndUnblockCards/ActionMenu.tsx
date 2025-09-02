@@ -64,8 +64,12 @@ export const BlockCardActionMenu = ({ record }: { record: CardblockData }) => {
             <EyeIcon /> View
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
+            <Ban className="text-green-500" />
+            Approve
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             <Ban className="text-red-500" />
-            Block
+            Decline
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -155,7 +159,11 @@ export const UnblockCardActionMenu = ({
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <CircleCheckIcon className="text-green-500" />
-            Unblock
+            Approve
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <CircleCheckIcon className="text-red-500" />
+            Decline
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
