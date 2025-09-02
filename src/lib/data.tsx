@@ -182,7 +182,7 @@ export const unblockCardData: CardBlockUnblockRecord[] = [
   },
 ];
 
-export const cardActivationData: CardActivationType[] = [
+export const cardActivationData: any[] = [
   {
     id: "1",
     customerName: "Jane Doe",
