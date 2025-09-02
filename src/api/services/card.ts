@@ -118,3 +118,31 @@ export const blockCard = async (data: {
     throw error;
   }
 };
+export const approveBlockRequest = async (data: {
+  cardBlockRequestId: string;
+  reason: string;
+}): Promise<any> => {
+  try {
+    const response = await axiosInstance.post<any>(
+      "/cards/block/approve",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Card block API error:", error);
+    throw error;
+  }
+};
+
+export const declinceBlockRequest = async (data: {
+  cardBlockRequestId: string;
+  reason: string;
+}): Promise<any> => {
+  try {
+    const response = await axiosInstance.post<any>("/cards/block/reject", data);
+    return response.data;
+  } catch (error) {
+    console.error("Card block API error:", error);
+    throw error;
+  }
+};

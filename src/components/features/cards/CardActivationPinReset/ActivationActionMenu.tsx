@@ -20,16 +20,9 @@ import {
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "components/ui/select";
-// import { Label } from "@/components/ui/label";
-// import { Textarea } from "@/components/ui/textarea";
+
 import type { ActivationRequest, CardActivationType } from "@/types";
+import { useActivateCardApproval } from "@/hooks";
 
 export const CardActivationActionMenu = ({
   item,
@@ -39,17 +32,27 @@ export const CardActivationActionMenu = ({
   const [dialogType, setDialogType] = useState<
     null | "approve" | "decline" | "reason"
   >(null);
-  //   const [declineReason, setDeclineReason] = useState("");
-  //   const [declineCategory, setDeclineCategory] = useState("");
+  const { mutate, data, isPending, isSuccess } = useActivateCardApproval();
 
   const handleApprove = () => {
-    // 🔥 Call APPROVE endpoint here with `item._id`
-    toast.success("PIN activation request approved.");
+    if (dialogType === "approve") {
+      const payload = {
+        activationRequestId: item?.id,
+      };
+      mutate(payload);
+    } else {
+      //TODO: handle decline
+    }
+
+    const payload = {
+      activationRequestId: item?.id,
+    };
+    mutate(payload);
+
     setDialogType(null);
   };
 
   const handleDecline = () => {
-    // 🔥 Call DECLINE endpoint here with `item._id`, `declineCategory`, `declineReason`
     toast.error("PIN activation request declined.");
     setDialogType(null);
   };
@@ -93,7 +96,9 @@ export const CardActivationActionMenu = ({
             <Button variant="outline" onClick={() => setDialogType(null)}>
               Cancel
             </Button>
-            <Button onClick={handleApprove}>Approve</Button>
+            <Button onClick={handleApprove}>
+              {isPending ? "Approving..." : "Approve"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

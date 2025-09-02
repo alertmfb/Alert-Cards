@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import type { CardblockData } from "@/types";
 import { maskPan } from "@/lib";
 import { ViewCustomerDetailsDialog } from "@/components/common/shared/Table/ViewDetailsDialog";
+import { useApproveCardApproval, useDeclineCardApproval } from "@/hooks";
 
 const getDetailsForView = (record: CardblockData) => [
   { label: "Customer Name", value: record?.card?.customer?.customerName },
@@ -42,12 +43,31 @@ const getDetailsForView = (record: CardblockData) => [
 export const BlockCardActionMenu = ({ record }: { record: CardblockData }) => {
   const [open, setOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
+  const [action, setAction] = useState("");
   const [reason, setReason] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState("");
+  const {
+    mutate: approvalMutation,
+    isPending: approvalPending,
+    isSuccess: approvalSuccess,
+  } = useApproveCardApproval();
+  const { mutate, data, isPending, isSuccess } = useDeclineCardApproval();
 
   const handleBlock = () => {
-    // Add your API call logic here
-    toast.error(`Card blocked: ${record?.card?.customer?.customerName}`);
+    if (action === "APPROVE") {
+      const payload = {
+        cardBlockRequestId: record?.id,
+        reason: record?.reason,
+      };
+      approvalMutation(payload);
+    } else {
+      const payload = {
+        cardBlockRequestId: record?.id,
+        reason: record?.reason,
+      };
+      mutate(payload);
+    }
+
     setOpen(false);
   };
 
@@ -63,11 +83,21 @@ export const BlockCardActionMenu = ({ record }: { record: CardblockData }) => {
           <DropdownMenuItem onClick={() => setViewOpen(true)}>
             <EyeIcon /> View
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => {
+              setAction("APPROVE");
+              setOpen(true);
+            }}
+          >
             <Ban className="text-green-500" />
             Approve
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => {
+              setAction("DECLINE");
+              setOpen(true);
+            }}
+          >
             <Ban className="text-red-500" />
             Decline
           </DropdownMenuItem>
@@ -77,7 +107,11 @@ export const BlockCardActionMenu = ({ record }: { record: CardblockData }) => {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Block Card</DialogTitle>
+            <DialogTitle>
+              {action === "APPROVE"
+                ? "Approve Block Card Request"
+                : "Decline Block Card Request"}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-4 pt-2">
@@ -111,11 +145,17 @@ export const BlockCardActionMenu = ({ record }: { record: CardblockData }) => {
               Cancel
             </Button>
             <Button
-              variant="destructive"
+              variant={action === "APPROVE" ? "default" : "destructive"}
               onClick={handleBlock}
               disabled={!reason}
             >
-              Confirm Block
+              {action === "APPROVE"
+                ? approvalPending
+                  ? "Approving..."
+                  : "Confirm"
+                : isPending
+                ? "Declining..."
+                : "Confirm"}
             </Button>
           </DialogFooter>
         </DialogContent>

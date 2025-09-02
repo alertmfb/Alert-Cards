@@ -2,7 +2,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   activateCard,
   activateCardApproval,
+  approveBlockRequest,
   blockCard,
+  declinceBlockRequest,
   getCardActivations,
   getCardBlocks,
   getCardChartData,
@@ -210,5 +212,47 @@ export function useGetCardBlocks(type: string) {
     error,
     refetch,
     isPending,
+  };
+}
+
+export function useApproveCardApproval() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: approveBlockRequest,
+
+    onSuccess() {
+      toast.success("Card block approved successful");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useDeclineCardApproval() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: declinceBlockRequest,
+
+    onSuccess() {
+      toast.success("Card block declined successful");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
   };
 }
