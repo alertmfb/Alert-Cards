@@ -6,6 +6,7 @@ import type {
   CardSummaryResponse,
   CardTransferResponse,
   CustomerCardResponse,
+  CustomerVerificationResponse,
 } from "@/types/card";
 
 export const getCardRequest = async (): Promise<CardResponse> => {
@@ -38,6 +39,15 @@ export const getCustomerCard = async (
 ): Promise<CustomerCardResponse> => {
   const res = await axiosInstance.get<CustomerCardResponse>(
     `/customers/card?accountNumber=${accountNumber}&type=${type}`
+  );
+  return res.data;
+};
+
+export const verifyAccount = async (
+  accountNumber: string
+): Promise<CustomerVerificationResponse> => {
+  const res = await axiosInstance.get<CustomerVerificationResponse>(
+    `/customers/verify?accountNumber=${accountNumber}`
   );
   return res.data;
 };

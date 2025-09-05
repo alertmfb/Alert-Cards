@@ -1,5 +1,5 @@
 // CreateCardRequestPage.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,28 +7,41 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/common/shared/PageHeader";
 import { useNavigate } from "react-router";
+import { useGetCustomerVerificationMutation } from "@/hooks";
+import type { CustomerData } from "../..";
+import type { VerifiedCustomerData } from "@/types";
 
 export default function CreateCardRequestPage() {
   const [accountNumber, setAccountNumber] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
+  const { mutate, data, isPending, isSuccess } =
+    useGetCustomerVerificationMutation();
   const navigate = useNavigate();
 
-  const handleVerify = async () => {
+  const handleVerify = (): void => {
     if (!accountNumber.trim()) {
-      toast.error("Please enter a valid account number");
+      toast.error("Please enter an account number");
       return;
     }
 
-    setIsVerifying(true);
+    mutate({ accountNumber });
+  };
+  console.log(data, "checking data");
+  const customerData: VerifiedCustomerData = {
+    name: data?.data?.name as string,
+    accountNumber: data?.data?.accountNumber as string,
+    phone: data?.data?.phone as string,
+    email: data?.data?.email as string,
+    accountBalance: data?.data?.accountBalance as string,
+  };
 
-    setTimeout(() => {
-      setIsVerifying(false);
+  useEffect(() => {
+    if (isSuccess) {
       toast.success("Account verified successfully!");
       navigate("/cards/card-requests/new", {
-        state: { accountNumber },
+        state: { customerData },
       });
-    }, 1500);
-  };
+    }
+  }, [isSuccess, customerData]);
 
   return (
     <div className="space-y-8">
@@ -52,10 +65,10 @@ export default function CreateCardRequestPage() {
               <Button
                 size="sm"
                 onClick={handleVerify}
-                disabled={isVerifying}
+                disabled={isPending}
                 className="absolute top-1/2 -translate-y-1/2 right-2 text-xs"
               >
-                {isVerifying ? "Verifying..." : "Verify"}
+                {isPending ? "Verifying..." : "Verify"}
               </Button>
             </div>
           </div>
