@@ -152,6 +152,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { CreditCard } from "lucide-react";
 import { useCardRequestStore } from "@/store/slices/cardRequestStore";
+import { DocumentUpload } from "./DocumentUpload";
 
 export function CardDetailsForm() {
   const { draft, patchCardDetails } = useCardRequestStore();
@@ -201,6 +202,7 @@ export function CardDetailsForm() {
                 <SelectItem value="Alert Gold">Alert Gold</SelectItem>
                 <SelectItem value="Alert Platinum">Alert Platinum</SelectItem>
                 <SelectItem value="Alert Luxe">Alert Luxe</SelectItem>
+                <SelectItem value="Alert Potrait">Alert Potrait</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -289,6 +291,9 @@ export function CardDetailsForm() {
             </Select>
           </div> */}
         </div>
+        {draft.cardDetails.variant === "Alert Potrait" && (
+          <DocumentUpload title="Profile Picture" />
+        )}
       </CardContent>
     </Card>
   );

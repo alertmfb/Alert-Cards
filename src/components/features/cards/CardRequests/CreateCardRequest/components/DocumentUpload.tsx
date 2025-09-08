@@ -48,7 +48,11 @@ import { CloudUpload, File, X } from "lucide-react";
 import { useCardRequestStore } from "@/store/slices/cardRequestStore";
 import { toast } from "sonner";
 
-export function DocumentUpload() {
+export function DocumentUpload({
+  title = "Supporting Documents",
+}: {
+  title?: string;
+}) {
   const { draft, addDocument } = useCardRequestStore();
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -102,7 +106,7 @@ export function DocumentUpload() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <File className="h-5 w-5" />
-          Supporting Documents
+          {title}
         </CardTitle>
         <CardDescription>
           Upload supporting documents for the card request (Max 5MB per file)

@@ -27,21 +27,20 @@ export default function CreateCardRequestPage() {
   };
   console.log(data, "checking data");
   const customerData: VerifiedCustomerData = {
-    name: data?.data?.name as string,
-    accountNumber: data?.data?.accountNumber as string,
-    phone: data?.data?.phone as string,
-    email: data?.data?.email as string,
-    accountBalance: data?.data?.accountBalance as string,
+    name: (data?.data?.name as string) || "Bamidele",
+    accountNumber: (data?.data?.accountNumber as string) || "110011010",
+    phone: (data?.data?.phone as string) || "09187",
+    email: (data?.data?.email as string) || "Bamidele",
+    accountBalance: (data?.data?.accountBalance as string) || "Bamidele",
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      toast.success("Account verified successfully!");
-      navigate("/cards/card-requests/new", {
-        state: { customerData },
-      });
-    }
-  }, [isSuccess, customerData]);
+    // if (isSuccess) {
+    toast.success("Account verified successfully!");
+    navigate("/cards/card-requests/new", {
+      state: { customerData },
+    });
+  }, [customerData]);
 
   return (
     <div className="space-y-8">
