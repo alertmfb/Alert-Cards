@@ -35,11 +35,12 @@ export default function CreateCardRequestPage() {
   };
 
   useEffect(() => {
-    // if (isSuccess) {
-    toast.success("Account verified successfully!");
-    navigate("/cards/card-requests/new", {
-      state: { customerData },
-    });
+    if (isSuccess) {
+      toast.success("Account verified successfully!");
+      navigate("/cards/card-requests/new", {
+        state: { customerData },
+      });
+    }
   }, [customerData]);
 
   return (

@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { useCardRequestStore } from "@/store/slices/cardRequestStore";
 import { PageHeader } from "@/components/common/shared/PageHeader";
 import { Card, CardContent } from "@/components/ui/card";
+import { useGetCustomerVerificationMutation } from "@/hooks";
 
 const MAX_REQUESTS = 10;
 
@@ -42,6 +43,8 @@ export default function CreateCardRequestStep2() {
   const [verificationStatus, setVerificationStatus] =
     useState<VerificationStatus>("idle");
   const [accountName, setAccountName] = useState("");
+  const { mutate, data, isPending, isSuccess } =
+    useGetCustomerVerificationMutation();
   console.log(state?.customerData);
   // const draft = state?.customerData;
   // Debounced account verification
@@ -52,24 +55,30 @@ export default function CreateCardRequestStep2() {
         return;
       }
 
-      setVerificationStatus("verifying");
+      if (isPending) {
+        setVerificationStatus("verifying");
+      }
 
       // Simulate API call with realistic delay
       setTimeout(() => {
         // Mock verification logic
         if (accountNumber.length >= 10) {
+          mutate({ accountNumber });
+
           const mockName = `Account Holder ${accountNumber.slice(-4)}`;
           setAccountName(mockName);
           setVerificationStatus("verified");
 
           // Update draft with verified account info
-          patchDraft({
-            customer: {
-              accountNumber: accountNumber.trim(),
-              accountName: mockName,
-              phone: "08012345678", // TODO: Get from backend API
-            },
-          });
+          if (isSuccess) {
+            patchDraft({
+              customer: {
+                accountNumber: accountNumber.trim(),
+                accountName: data?.data?.name as string,
+                phone: data?.data?.phone as string, // TODO: Get from backend API
+              },
+            });
+          }
         } else {
           setVerificationStatus("error");
           setAccountName("");
@@ -78,7 +87,7 @@ export default function CreateCardRequestStep2() {
     },
     [patchDraft]
   );
-
+  console.log(data?.data);
   // Debounce effect for account verification
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -114,6 +123,7 @@ export default function CreateCardRequestStep2() {
     }, {});
   }, [requests]);
 
+  console.log(requests);
   const handleAddAnother = () => {
     if (requests.length >= MAX_REQUESTS) {
       toast.error(
@@ -327,9 +337,14 @@ export default function CreateCardRequestStep2() {
           {verificationStatus === "verified" && (
             <>
               <CustomerDetails
-                name={"A/B"}
-                phone={draft.customer?.phone ?? "08012345678"}
-                account={"22222222"}
+                name={
+                  draft?.customer?.accountName || (data?.data?.name as string)
+                }
+                phone={draft?.customer?.phone || (data?.data?.phone as string)}
+                account={
+                  draft?.customer?.accountNumber ||
+                  (data?.data?.accountNumber as string)
+                }
               />
 
               <CardDetailsForm />
