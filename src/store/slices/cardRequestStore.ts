@@ -21,6 +21,19 @@ export type CustomerDetails = {
   accountNumber: string;
   accountName: string;
   phone?: string;
+  accountBalanace?: string;
+  name?: string;
+  email?: string;
+  cards?: CustomerCardDetails[];
+};
+export type CustomerCardDetails = {
+  AccountNumber: string;
+  CardPAN: string;
+  LinkedDate: string;
+  ExpiryDate: string;
+  SerialNo: string;
+  NameOnCard: string;
+  Status: string;
 };
 
 export type CardRequest = {
@@ -55,6 +68,8 @@ const initialDraft: Draft = {
     accountNumber: "",
     accountName: "",
     phone: "",
+    cards: undefined,
+    email: "",
   },
   cardDetails: {
     scheme: "",
@@ -246,6 +261,8 @@ export const useCardRequestStore = create<CardRequestState>()(
             accountNumber: draft.customer.accountNumber!,
             accountName: draft.customer.accountName!,
             phone: draft.customer.phone || "",
+            cards: draft.customer.cards,
+            email: draft.customer.email,
           },
           cardDetails: { ...draft.cardDetails } as CardDetails,
           documents: [...draft.documents],

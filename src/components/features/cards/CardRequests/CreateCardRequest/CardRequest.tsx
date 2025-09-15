@@ -43,10 +43,11 @@ export default function CreateCardRequestStep2() {
   const [verificationStatus, setVerificationStatus] =
     useState<VerificationStatus>("idle");
   const [accountName, setAccountName] = useState("");
+  const [openAnoter, setOpenAnother] = useState(true);
   const { mutate, data, isPending, isSuccess } =
     useGetCustomerVerificationMutation();
   console.log(state?.customerData);
-  // const draft = state?.customerData;
+  // const draft = state?.customerData?.customerData;
   // Debounced account verification
   const verifyAccount = useCallback(
     async (accountNumber: string) => {
@@ -76,6 +77,7 @@ export default function CreateCardRequestStep2() {
                 accountNumber: accountNumber.trim(),
                 accountName: data?.data?.name as string,
                 phone: data?.data?.phone as string, // TODO: Get from backend API
+                cards: data?.data?.cards,
               },
             });
           }
@@ -99,19 +101,25 @@ export default function CreateCardRequestStep2() {
 
   // // Pre-seed account data from Step 1
   useMemo(() => {
-    if (state?.accountNumber && !accountInput) {
-      setAccountInput(state.accountNumber);
-      setAccountName(state.accountName ?? "");
+    console.log(state, "Pauloooo");
+    if (state?.customerData?.accountNumber) {
+      setAccountInput(state?.customerData?.accountNumber);
+      setAccountName(state?.customerData?.name ?? "");
       setVerificationStatus("verified");
       patchDraft({
         customer: {
-          accountNumber: state.accountNumber,
-          accountName: state.accountName ?? "Account Holder",
-          phone: "08012345678",
+          accountNumber: state?.customerData?.accountNumber || "Bamidele Test",
+          accountName: state?.customerData?.name || "Account Holder",
+          phone: state?.customerData?.phone || "08012345678",
+          cards: state?.customerData?.cards,
         },
       });
     }
-  }, [state?.accountNumber, state?.accountName, patchDraft, accountInput]);
+  }, [
+    state?.customerData?.accountNumber,
+    state?.customerData?.name,
+    patchDraft,
+  ]);
 
   // Group requests by account for better display
   const groupedRequests = useMemo(() => {
@@ -132,38 +140,25 @@ export default function CreateCardRequestStep2() {
       return;
     }
 
-    // Validate current draft before adding
-    if (verificationStatus !== "verified") {
-      toast.error("Please enter and verify a valid account number");
-      return;
-    }
-
-    if (!draft.cardDetails?.scheme) {
-      toast.error("Please select card scheme");
-      return;
-    }
-
-    if (!draft.cardDetails?.nameOnCard?.trim()) {
-      toast.error("Please enter name on card");
-      return;
-    }
+    setOpenAnother(true);
 
     // Commit current draft to requests
-    const success = commitDraft();
-    if (success) {
-      toast.success("Card request added successfully!");
+    // const success = commitDraft();
+    // if (success) {
+    //   toast.success("Card request added successfully!");
 
-      // Reset form for new account
-      setAccountInput("");
-      setAccountName("");
-      setVerificationStatus("idle");
-      // clearDraft();
+    // Reset form for new account
+    // setAccountInput("");
+    // setAccountName("");
+    // setVerificationStatus("idle");
+    // clearDraft();
 
-      // TODO: Call backend API to save draft
-      // await saveCardRequestDraft(draft);
-    } else {
-      toast.error("Failed to add request");
-    }
+    // TODO: Call backend API to save draft
+    // await saveCardRequestDraft(draft);
+
+    // } else {
+    //   toast.error("Failed to add request");
+    // }
   };
 
   const handleDelete = (id: string) => {
@@ -185,19 +180,47 @@ export default function CreateCardRequestStep2() {
     }
   };
 
-  const handleProceed = () => {
+  const handleSaveRequest = () => {
     // If there's an uncommitted draft with valid data, commit it first
+    // Validate current draft before adding
+    if (verificationStatus !== "verified") {
+      toast.error("Please enter and verify a valid account number");
+      return;
+    }
+
+    if (!draft.cardDetails?.scheme) {
+      toast.error("Please select card scheme");
+      return;
+    }
+
+    if (!draft.cardDetails?.nameOnCard?.trim()) {
+      toast.error("Please enter name on card");
+      return;
+    }
     if (
       verificationStatus === "verified" &&
       draft.cardDetails?.scheme &&
       draft.cardDetails?.nameOnCard?.trim()
     ) {
       const success = commitDraft();
+      setAccountInput("");
+      setAccountName("");
+      setVerificationStatus("idle");
+      // clearDraft();
+
+      // TODO: Call backend API to save draft
+      // await saveCardRequestDraft(draft);
+      setOpenAnother(true);
+      setOpenAnother(false);
+
       if (!success) {
         toast.error("Failed to save current request");
         return;
       }
     }
+  };
+
+  const handleProceed = () => {
     if (requests.length === 0) {
       toast.error("Please add at least one card request");
       return;
@@ -208,13 +231,12 @@ export default function CreateCardRequestStep2() {
       state: { requests: [...requests] },
     });
   };
-
   const canAddRequest =
     verificationStatus === "verified" &&
     draft.cardDetails?.scheme &&
     draft.cardDetails?.nameOnCard?.trim();
 
-  const canProceed = requests.length > 0 || canAddRequest;
+  const canProceed = requests.length > 0;
 
   const getVerificationIcon = () => {
     switch (verificationStatus) {
@@ -241,7 +263,7 @@ export default function CreateCardRequestStep2() {
         return "";
     }
   };
-
+  console.log(verificationStatus, "Remilekun");
   return (
     <>
       <PageHeader
@@ -286,73 +308,87 @@ export default function CreateCardRequestStep2() {
         )} */}
 
         {/* Current Request Form */}
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold">
-            {requests.length > 0 ? "New Card Request" : "Create Card Request"}
-          </h2>
+        {openAnoter && (
+          <div className="space-y-2">
+            <h2 className="text-lg font-semibold">
+              {requests.length > 0 ? "New Card Request" : "Create Card Request"}
+            </h2>
 
-          {/* Account Number Input with Verification */}
-          <Card>
-            <CardContent>
-              <div className="space-y-3">
-                <Label htmlFor="account-input">Account Number</Label>
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Input
-                      id="account-input"
-                      placeholder="Enter customer's account number"
-                      value={accountInput}
-                      onChange={(e) => setAccountInput(e.target.value)}
-                      className={`pr-12 h-12 ${
-                        verificationStatus === "verified"
-                          ? "border-green-500"
-                          : verificationStatus === "error"
-                          ? "border-red-500"
-                          : ""
-                      }`}
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {getVerificationIcon()}
+            {/* Account Number Input with Verification */}
+            <Card>
+              <CardContent>
+                <div className="space-y-3">
+                  <Label htmlFor="account-input">Account Number</Label>
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Input
+                        id="account-input"
+                        placeholder="Enter customer's account number"
+                        value={accountInput}
+                        onChange={(e) => setAccountInput(e.target.value)}
+                        className={`pr-12 h-12 ${
+                          verificationStatus === "verified"
+                            ? "border-green-500"
+                            : verificationStatus === "error"
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {getVerificationIcon()}
+                      </div>
                     </div>
+                    {verificationStatus !== "idle" && (
+                      <p
+                        className={`text-sm ${
+                          verificationStatus === "verified"
+                            ? "text-green-600"
+                            : verificationStatus === "error"
+                            ? "text-red-600"
+                            : "text-blue-600"
+                        }`}
+                      >
+                        {getVerificationMessage()}
+                      </p>
+                    )}
                   </div>
-                  {verificationStatus !== "idle" && (
-                    <p
-                      className={`text-sm ${
-                        verificationStatus === "verified"
-                          ? "text-green-600"
-                          : verificationStatus === "error"
-                          ? "text-red-600"
-                          : "text-blue-600"
-                      }`}
-                    >
-                      {getVerificationMessage()}
-                    </p>
-                  )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Customer Details - Only show when account is verified */}
-          {verificationStatus === "verified" && (
-            <>
-              <CustomerDetails
-                name={
-                  draft?.customer?.accountName || (data?.data?.name as string)
-                }
-                phone={draft?.customer?.phone || (data?.data?.phone as string)}
-                account={
-                  draft?.customer?.accountNumber ||
-                  (data?.data?.accountNumber as string)
-                }
-              />
+            {/* Customer Details - Only show when account is verified */}
+            {verificationStatus === "verified" && (
+              <>
+                <CustomerDetails
+                  name={
+                    draft?.customer?.accountName || (data?.data?.name as string)
+                  }
+                  phone={
+                    draft?.customer?.phone || (data?.data?.phone as string)
+                  }
+                  account={
+                    draft?.customer?.accountNumber ||
+                    (data?.data?.accountNumber as string)
+                  }
+                />
 
-              <CardDetailsForm />
+                <CardDetailsForm />
 
-              <DocumentUpload />
-            </>
-          )}
-        </div>
+                <DocumentUpload />
+
+                <div className="flex justify-end items-end">
+                  <Button
+                    onClick={handleSaveRequest}
+                    disabled={!canAddRequest}
+                    className="min-w-40"
+                  >
+                    Save Request
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex justify-between items-center pt-6 border-t">
@@ -361,18 +397,17 @@ export default function CreateCardRequestStep2() {
           </div>
 
           <div className="flex gap-3">
-            {requests.length < MAX_REQUESTS &&
-              verificationStatus === "verified" && (
-                <Button
-                  onClick={handleAddAnother}
-                  variant="outline"
-                  disabled={!canAddRequest}
-                  className="min-w-40"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Another Card
-                </Button>
-              )}
+            {requests.length < MAX_REQUESTS && (
+              <Button
+                onClick={handleAddAnother}
+                variant="outline"
+                disabled={requests?.length === 0}
+                className="min-w-40"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Another Card
+              </Button>
+            )}
 
             <Button
               onClick={handleProceed}

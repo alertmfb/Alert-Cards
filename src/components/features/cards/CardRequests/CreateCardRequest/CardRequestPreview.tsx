@@ -489,6 +489,7 @@ import { toast } from "sonner";
 import {
   useCardRequestStore,
   type CardRequest,
+  type CustomerCardDetails,
 } from "@/store/slices/cardRequestStore";
 import GoBackButton from "@/components/common/shared/GoBackButton";
 import { PageHeader } from "@/components/common/shared/PageHeader";
@@ -550,13 +551,6 @@ const getMockExistingCards = (accountNumber: string): ExistingCard[] => [
   },
 ];
 
-const getMockAccountData = (accountNumber: string): AccountData => ({
-  accountNumber,
-  accountName: "John Doe", // Hard-coded for now
-  accountBalance: 150000, // Hard-coded for now - ₦150,000
-  cardCost: 2000, // Hard-coded for now - ₦2,000
-});
-
 const blockReasons = [
   { value: "damaged", label: "Damaged" },
   { value: "lost", label: "Lost" },
@@ -604,7 +598,9 @@ export default function CardRequestPreview() {
   const { requests: storeRequests } = useCardRequestStore();
 
   const [isCardsOpen, setIsCardsOpen] = useState<Record<string, boolean>>({});
-  const [selectedCard, setSelectedCard] = useState<ExistingCard | null>(null);
+  const [selectedCard, setSelectedCard] = useState<CustomerCardDetails | null>(
+    null
+  );
   const [blockReason, setBlockReason] = useState<string>("");
   const [isBlockingCard, setIsBlockingCard] = useState(false);
   const [accountsData, setAccountsData] = useState<Map<string, AccountData>>(
@@ -616,6 +612,13 @@ export default function CardRequestPreview() {
 
   // Use requests from navigation state or fallback to store
   const requests = state?.requests || storeRequests;
+
+  const getMockAccountData = (accountNumber: string): AccountData => ({
+    accountNumber,
+    accountName: "John Doe", // Hard-coded for now
+    accountBalance: 150000, // Hard-coded for now - ₦150,000
+    cardCost: 2000, // Hard-coded for now - ₦2,000
+  });
 
   // Get account data for each request
   useEffect(() => {
@@ -722,7 +725,7 @@ export default function CardRequestPreview() {
       </div>
     );
   }
-
+  console.log(requests);
   return (
     <div className="space-y-8">
       <div className="space-y-2">
@@ -736,9 +739,14 @@ export default function CardRequestPreview() {
 
       <div className="space-y-8">
         {/* Account Information Cards - One for each request */}
-        {requests.map((request, index) => {
+        {requests?.map((request, index) => {
           const accountNumber = request.customer.accountNumber;
-          const accountData = accountsData.get(accountNumber);
+          const accountData = {
+            name: request?.customer?.accountName,
+            balance: (request?.customer?.accountBalance as string) || "409933",
+            cost: 2000,
+            cards: request?.customer?.cards,
+          };
           const existingCards = cardsData.get(accountNumber) || [];
           const isCardsOpenForAccount = isCardsOpen[accountNumber] || false;
 
@@ -768,14 +776,14 @@ export default function CardRequestPreview() {
                 {accountData && (
                   <>
                     {[
-                      { label: "Account Name", value: accountData.accountName },
+                      { label: "Account Name", value: accountData.name },
                       {
                         label: "Account Balance",
-                        value: `₦${accountData.accountBalance.toLocaleString()}`,
+                        value: `₦${accountData.balance.toLocaleString()}`,
                       },
                       {
                         label: "Card Cost",
-                        value: `₦${accountData.cardCost.toLocaleString()}`,
+                        value: `₦${accountData.cost.toLocaleString()}`,
                       },
                     ].map(({ label, value }) => (
                       <div
@@ -839,7 +847,9 @@ export default function CardRequestPreview() {
                   <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border border-slate-200 bg-slate-50 p-3 hover:bg-slate-100">
                     <div className="flex items-center gap-3">
                       <span>Existing cards</span>
-                      <Badge variant="outline">{existingCards.length}</Badge>
+                      <Badge variant="outline">
+                        {accountData?.cards?.length}
+                      </Badge>
                       <BlinkingInfoIcon />
                     </div>
                     <div className="flex items-center gap-2">
@@ -852,29 +862,30 @@ export default function CardRequestPreview() {
                   </CollapsibleTrigger>
 
                   <CollapsibleContent className="pt-4 space-y-4">
-                    {existingCards.map((card) => {
-                      const cfg = cardStatusConfig[card.status];
+                    {accountData?.cards?.map((card) => {
+                      const cfg = cardStatusConfig[card?.Status];
                       const StatusIcon = cfg.icon;
 
                       return (
                         <div
-                          key={card.id}
+                          key={card?.CardPAN}
                           className="flex items-center justify-between rounded-md border border-slate-200 bg-white px-4 py-3"
                         >
                           <div className="flex items-center gap-3">
                             <StatusIcon className="h-5 w-5 text-slate-500" />
                             <div className="space-y-1">
-                              <div className="font-medium">{card.number}</div>
+                              <div className="font-medium">{card?.CardPAN}</div>
                               <div className="text-sm text-muted-foreground">
-                                {card.type} • Expires {card.expiryDate}
+                                {/* {card?.type}  */}• Expires{" "}
+                                {card?.ExpiryDate}
                               </div>
                             </div>
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <Badge className={cfg.color}>{card.status}</Badge>
+                            <Badge className={cfg.color}>{card.Status}</Badge>
 
-                            {card.status === "Active" && (
+                            {card.Status === "Active" && (
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                   <Button

@@ -31,7 +31,8 @@ export default function CreateCardRequestPage() {
     accountNumber: (data?.data?.accountNumber as string) || "110011010",
     phone: (data?.data?.phone as string) || "09187",
     email: (data?.data?.email as string) || "Bamidele",
-    accountBalance: (data?.data?.accountBalance as string) || "Bamidele",
+    accountBalance: (data?.data?.accountBalance as string) || "700000",
+    cards: data?.data?.cards,
   };
 
   useEffect(() => {
