@@ -48,15 +48,20 @@ import { CloudUpload, File, X } from "lucide-react";
 import { useCardRequestStore } from "@/store/slices/cardRequestStore";
 import { toast } from "sonner";
 
+interface DocumentProps {
+  title?: string;
+  request?: boolean;
+  setUploadedFile?: any;
+}
 export function DocumentUpload({
   title = "Supporting Documents",
-}: {
-  title?: string;
-}) {
+  request,
+  setUploadedFile,
+}: DocumentProps) {
   const { draft, addDocument } = useCardRequestStore();
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const [selectedFile, setSelectedFile] = useState<null | File>(null);
   const handleFileSelect = (files: FileList | null) => {
     if (!files) return;
 
@@ -75,7 +80,19 @@ export function DocumentUpload({
         return;
       }
 
-      addDocument(file);
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setUploadedFile(base64String);
+      };
+      console.log(file);
+      setSelectedFile(file);
+      setUploadedFile(file);
+      file;
+      if (request) {
+        addDocument(file);
+      }
       toast.success(`${file.name} uploaded successfully`);
     });
   };
@@ -100,7 +117,7 @@ export function DocumentUpload({
     // TODO: Implement remove document functionality in store
     toast.success("Document removed");
   };
-
+  console.log(selectedFile);
   return (
     <Card>
       <CardHeader>
@@ -155,7 +172,7 @@ export function DocumentUpload({
         />
 
         {/* Uploaded Files */}
-        {draft.documents.length > 0 && (
+        {draft.documents.length > 0 ? (
           <div className="space-y-2">
             <h4 className="text-sm font-medium">
               Uploaded Documents ({draft.documents.length})
@@ -190,6 +207,39 @@ export function DocumentUpload({
               ))}
             </div>
           </div>
+        ) : (
+          <>
+            {selectedFile !== null ? (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">Uploaded Document</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border">
+                    <div className="flex items-center gap-3">
+                      <File className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium">
+                          {selectedFile?.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {(selectedFile?.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </>
         )}
       </CardContent>
     </Card>
