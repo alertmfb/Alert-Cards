@@ -50,6 +50,7 @@ export const csoNavItems = [
         url: "/cards/activation-pin-reset",
       },
       { title: "Block/ Unblock Cards", url: "/cards/block-unblock-cards" },
+      { title: "Upload PIN", url: "/cards/upload-pin" },
     ],
   },
 ];
