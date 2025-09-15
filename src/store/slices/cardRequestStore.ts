@@ -105,6 +105,7 @@ interface CardRequestState {
   /* ---- Request Actions ---- */
   commitDraft: () => boolean;
   deleteRequest: (id: string) => void;
+  clearRequests: () => void;
   editRequest: (id: string) => void;
   updateRequestStatus: (id: string, status: CardRequest["status"]) => void;
 
@@ -291,7 +292,10 @@ export const useCardRequestStore = create<CardRequestState>()(
         set((state) => ({
           requests: state.requests.filter((request) => request.id !== id),
         })),
-
+      clearRequests: () =>
+        set(() => ({
+          requests: [],
+        })),
       editRequest: (id) => {
         const request = get().requests.find((r) => r.id === id);
         if (!request) return;

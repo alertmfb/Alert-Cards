@@ -29,7 +29,8 @@ export default function CardRequestSummary() {
   const [showDialog, setShowDialog] = useState(false);
   const { mutate, data, isPending, isSuccess } = useRequestBulkCards();
   // Get data from Zustand store
-  const { requests, updateRequestStatus } = useCardRequestStore();
+  const { requests, clearRequests, updateRequestStatus } =
+    useCardRequestStore();
 
   const cardCost = 2000;
 
@@ -330,7 +331,11 @@ export default function CardRequestSummary() {
             <div className="mt-6 flex justify-end gap-2">
               <Button
                 variant="ghost"
-                onClick={() => setShowDialog(false)}
+                onClick={() => {
+                  setShowDialog(false);
+                  navigate("/cards/card-requests");
+                  clearRequests();
+                }}
                 className="text-sm"
               >
                 Cancel
