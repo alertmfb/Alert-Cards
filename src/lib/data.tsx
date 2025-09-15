@@ -227,3 +227,55 @@ export const adminTableData: UserAdminType[] = [
     createdAt: "2024-03-20T15:10:00Z",
   },
 ];
+
+export type Options = {
+  id: number;
+  label: string;
+  value: string;
+};
+export const cardScheme: Options[] = [
+  { id: 1, label: "Verve Card", value: "VERVE_CARD" },
+  { id: 2, label: "Master Card", value: "MASTER_CARD" },
+  { id: 3, label: "Visa Card", value: "VISA_CARD" },
+];
+
+export const cardVariant: Options[] = [
+  {
+    id: 1,
+    label: "Alert Gold",
+    value: "ALERT_GOLD",
+  },
+  { id: 2, label: "Alert Platinum", value: "ALERT_PLATINUM" },
+  { id: 3, label: "Alert Luxe", value: "ALERT_LUXE" },
+];
+
+export const requestType: Options[] = [
+  {
+    id: 1,
+    label: "New",
+    value: "NEW",
+  },
+  { id: 2, label: "Renewal", value: "RENEWAL" },
+  { id: 3, label: "Re-Issue", value: "RE_ISSUE" },
+];
+
+export const requestReason: Options[] = [
+  {
+    id: 1,
+    label: "Damaged",
+    value: "DAMAGED",
+  },
+  { id: 2, label: "Lost", value: "LOST" },
+  { id: 3, label: "Stolen", value: "STOLEN" },
+  { id: 4, label: "Trapped", value: "TRAPPED" },
+];
+
+export const requestChannel: Options[] = [
+  {
+    id: 1,
+    label: "Branch",
+    value: "BRANCH",
+  },
+  { id: 2, label: "Mobile App", value: "MOBILE_APP" },
+  { id: 3, label: "Trapped", value: "BUSINESS_BANKING" },
+];

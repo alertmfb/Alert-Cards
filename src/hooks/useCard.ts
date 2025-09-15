@@ -12,6 +12,7 @@ import {
   getCardSummary,
   getCardTransfer,
   getCustomerCard,
+  requestBulkRequests,
   verifyAccount,
 } from "@/api/services/card";
 import { toast } from "sonner";
@@ -261,6 +262,27 @@ export function useDeclineCardApproval() {
 
     onSuccess() {
       toast.success("Card block declined successful");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useRequestBulkCards() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: requestBulkRequests,
+
+    onSuccess() {
+      toast.success("Bulk card requested successful");
     },
     onError(error: any) {
       toast(error?.response?.data?.message);

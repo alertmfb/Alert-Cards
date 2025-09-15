@@ -156,3 +156,34 @@ export const declinceBlockRequest = async (data: {
     throw error;
   }
 };
+
+export const requestBulkRequests = async (data: {
+  requests: [
+    {
+      customerAccountNumber: string;
+      customerName: string;
+      customerPhoneNumber: string;
+      scheme: string;
+      variant: string;
+      nameOnCard: string;
+      requestType: string;
+      reissueReason: string;
+      pickUpBranchId: string;
+      channel: string;
+      requestDocumentUrl: string;
+      chargeWaive: boolean;
+      chargeWaiveReason: string;
+    }
+  ];
+}): Promise<any> => {
+  try {
+    const response = await axiosInstance.post<any>(
+      "/cards/requests/bulk",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Card block API error:", error);
+    throw error;
+  }
+};

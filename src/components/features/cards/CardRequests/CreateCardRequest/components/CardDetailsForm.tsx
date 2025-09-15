@@ -153,14 +153,23 @@ import { Label } from "@/components/ui/label";
 import { CreditCard } from "lucide-react";
 import { useCardRequestStore } from "@/store/slices/cardRequestStore";
 import { DocumentUpload } from "./DocumentUpload";
+import {
+  cardScheme,
+  cardVariant,
+  requestChannel,
+  requestReason,
+  requestType,
+  type Options,
+} from "@/lib";
+import { useBranchesQuery } from "@/api";
 
 export function CardDetailsForm() {
   const { draft, patchCardDetails } = useCardRequestStore();
-
+  const { data } = useBranchesQuery();
   const handleFieldChange = (field: string, value: string) => {
     patchCardDetails({ [field]: value });
   };
-
+  console.log(data, "checking branch");
   return (
     <Card>
       <CardHeader>
@@ -181,10 +190,11 @@ export function CardDetailsForm() {
                 <SelectValue placeholder="Select preferred Card Scheme" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Visa Card">Visa Card</SelectItem>
-                <SelectItem value="Mastercard">Mastercard</SelectItem>
-                <SelectItem value="Afrigo">Afrigo</SelectItem>
-                <SelectItem value="Verve Card">Verve Card</SelectItem>
+                {cardScheme?.map((scheme: Options) => (
+                  <SelectItem value={scheme.value} key={scheme.id}>
+                    {scheme.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -199,10 +209,11 @@ export function CardDetailsForm() {
                 <SelectValue placeholder="Select preferred Card Variant" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Alert Gold">Alert Gold</SelectItem>
-                <SelectItem value="Alert Platinum">Alert Platinum</SelectItem>
-                <SelectItem value="Alert Luxe">Alert Luxe</SelectItem>
-                <SelectItem value="Alert Potrait">Alert Potrait</SelectItem>
+                {cardVariant?.map((variant: Options) => (
+                  <SelectItem value={variant.value} key={variant.id}>
+                    {variant.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -227,9 +238,11 @@ export function CardDetailsForm() {
                 <SelectValue placeholder="Select request type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="New">New</SelectItem>
-                <SelectItem value="Renewal">Renewal</SelectItem>
-                <SelectItem value="Re-Issue">Re-Issue</SelectItem>
+                {requestType?.map((type: Options) => (
+                  <SelectItem value={type.value} key={type.id}>
+                    {type.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -244,11 +257,11 @@ export function CardDetailsForm() {
                 <SelectValue placeholder="Select reason for request" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Damaged">Damaged</SelectItem>
-                <SelectItem value="Lost">Lost</SelectItem>
-                <SelectItem value="Stolen">Stolen</SelectItem>
-                <SelectItem value="Trapped">Trapped</SelectItem>
-                <SelectItem value="New Request">New Request</SelectItem>
+                {requestReason?.map((reason: Options) => (
+                  <SelectItem value={reason.value} key={reason.id}>
+                    {reason.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -263,15 +276,16 @@ export function CardDetailsForm() {
                 <SelectValue placeholder="Select pickup branch" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Victoria Island">Victoria Island</SelectItem>
-                <SelectItem value="Ikeja">Ikeja</SelectItem>
-                <SelectItem value="Lekki">Lekki</SelectItem>
-                <SelectItem value="Surulere">Surulere</SelectItem>
+                {data?.map((branch) => (
+                  <SelectItem value={branch.id} key={branch.id}>
+                    {branch.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* <div className="space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="channel">Request Channel</Label>
             <Select
               value={draft.cardDetails.channel ?? ""}
@@ -281,15 +295,14 @@ export function CardDetailsForm() {
                 <SelectValue placeholder="Select request channel" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Branch">Branch</SelectItem>
-                <SelectItem value="Mobile App">Mobile App</SelectItem>
-                <SelectItem value="Business Banking">
-                  Business Banking
-                </SelectItem>
-                <SelectItem value="Online Banking">Online Banking</SelectItem>
+                {requestChannel?.map((channel: Options) => (
+                  <SelectItem value={channel.value} key={channel.id}>
+                    {channel.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-          </div> */}
+          </div>
         </div>
         {draft.cardDetails.variant === "Alert Potrait" && (
           <DocumentUpload title="Profile Picture" />
