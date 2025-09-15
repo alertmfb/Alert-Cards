@@ -1,6 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import type {
   BlockCardResponse,
+  BulkRequest,
   CardActivationResponse,
   CardResponse,
   CardSummaryResponse,
@@ -157,25 +158,7 @@ export const declinceBlockRequest = async (data: {
   }
 };
 
-export const requestBulkRequests = async (data: {
-  requests: [
-    {
-      customerAccountNumber: string;
-      customerName: string;
-      customerPhoneNumber: string;
-      scheme: string;
-      variant: string;
-      nameOnCard: string;
-      requestType: string;
-      reissueReason: string;
-      pickUpBranchId: string;
-      channel: string;
-      requestDocumentUrl: string;
-      chargeWaive: boolean;
-      chargeWaiveReason: string;
-    }
-  ];
-}): Promise<any> => {
+export const requestBulkRequests = async (data: BulkRequest): Promise<any> => {
   try {
     const response = await axiosInstance.post<any>(
       "/cards/requests/bulk",
