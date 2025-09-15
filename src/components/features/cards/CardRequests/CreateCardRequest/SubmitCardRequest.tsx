@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BarChart2, Check, Clock } from "lucide-react";
 import { toast } from "sonner";
-import { useCardRequestStore } from "@/store/slices/cardRequestStore";
+import {
+  useCardRequestStore,
+  type CardRequest,
+  type CustomerDetails,
+} from "@/store/slices/cardRequestStore";
 import { cn } from "@/lib";
 import GoBackButton from "@/components/common/shared/GoBackButton";
 import { PageHeader } from "@/components/common/shared/PageHeader";
@@ -17,14 +21,16 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { useRequestBulkCards } from "@/hooks";
 
 export default function CardRequestSummary() {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
+  const { mutate, data, isPending, isSuccess } = useRequestBulkCards();
   // Get data from Zustand store
-  const { requests, updateRequestStatus } = useCardRequestStore();
+  const { requests, clearRequests, updateRequestStatus } =
+    useCardRequestStore();
 
   const cardCost = 2000;
 
@@ -59,27 +65,49 @@ export default function CardRequestSummary() {
   //       setIsSubmitting(false);
   //     }
   //   };
-
+  console.log(requests);
   const handleSubmit = async () => {
-    setIsSubmitting(true);
     try {
       // await submitRequestsAPI(requests); // 🔄 replace with real call
 
       // If you use SWR/React‑Query later, invalidate here:
       // mutate("/api/requests");  // SWR
       // queryClient.invalidateQueries("requests"); // React Query
+      const modifyCardRequests = requests?.map((request: CardRequest) => ({
+        customerAccountNumber: request?.customer?.accountNumber,
+        customerName: request?.customer?.accountName,
+        customerPhoneNumber: request?.customer?.phone,
+        scheme: request?.cardDetails?.scheme,
+        variant: request?.cardDetails?.variant,
+        nameOnCard: request?.cardDetails?.nameOnCard,
+        requestType: request?.cardDetails?.requestType,
+        reissueReason: request?.cardDetails?.reason,
+        pickUpBranchId: request?.cardDetails?.branch,
+        channel: request?.cardDetails?.channel,
+        requestDocumentUrl: "www.com",
+        chargeWaive: false,
+        chargeWaiveReason: "Testing",
+      }));
 
+      const payload = { requests: modifyCardRequests };
+      mutate(payload);
       toast.success(
         `${requests.length} request${requests.length > 1 ? "s" : ""} submitted`
       );
-      setShowDialog(true);
     } catch (err) {
       toast.error("Failed to submit. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      // setIsSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowDialog(true);
+    }
+  }, [isSuccess]);
+
+  console.log(data);
   if (!requests.length) {
     return (
       <div className="text-center py-16">
@@ -266,10 +294,10 @@ export default function CardRequestSummary() {
         <div className="flex justify-end pt-8 border-t border-gray-200">
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting}
+            disabled={isPending}
             className="min-w-40 px-6 py-2 font-semibold"
           >
-            {isSubmitting ? (
+            {isPending ? (
               <>
                 <Clock className="mr-2 h-4 w-4 animate-spin" />
                 Submitting…
@@ -303,7 +331,11 @@ export default function CardRequestSummary() {
             <div className="mt-6 flex justify-end gap-2">
               <Button
                 variant="ghost"
-                onClick={() => setShowDialog(false)}
+                onClick={() => {
+                  setShowDialog(false);
+                  navigate("/cards/card-requests");
+                  clearRequests();
+                }}
                 className="text-sm"
               >
                 Cancel

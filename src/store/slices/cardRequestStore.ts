@@ -21,6 +21,19 @@ export type CustomerDetails = {
   accountNumber: string;
   accountName: string;
   phone?: string;
+  accountBalanace?: string;
+  name?: string;
+  email?: string;
+  cards?: CustomerCardDetails[];
+};
+export type CustomerCardDetails = {
+  AccountNumber: string;
+  CardPAN: string;
+  LinkedDate: string;
+  ExpiryDate: string;
+  SerialNo: string;
+  NameOnCard: string;
+  Status: string;
 };
 
 export type CardRequest = {
@@ -55,6 +68,8 @@ const initialDraft: Draft = {
     accountNumber: "",
     accountName: "",
     phone: "",
+    cards: undefined,
+    email: "",
   },
   cardDetails: {
     scheme: "",
@@ -90,6 +105,7 @@ interface CardRequestState {
   /* ---- Request Actions ---- */
   commitDraft: () => boolean;
   deleteRequest: (id: string) => void;
+  clearRequests: () => void;
   editRequest: (id: string) => void;
   updateRequestStatus: (id: string, status: CardRequest["status"]) => void;
 
@@ -246,6 +262,8 @@ export const useCardRequestStore = create<CardRequestState>()(
             accountNumber: draft.customer.accountNumber!,
             accountName: draft.customer.accountName!,
             phone: draft.customer.phone || "",
+            cards: draft.customer.cards,
+            email: draft.customer.email,
           },
           cardDetails: { ...draft.cardDetails } as CardDetails,
           documents: [...draft.documents],
@@ -274,7 +292,10 @@ export const useCardRequestStore = create<CardRequestState>()(
         set((state) => ({
           requests: state.requests.filter((request) => request.id !== id),
         })),
-
+      clearRequests: () =>
+        set(() => ({
+          requests: [],
+        })),
       editRequest: (id) => {
         const request = get().requests.find((r) => r.id === id);
         if (!request) return;

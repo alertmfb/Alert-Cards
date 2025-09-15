@@ -12,6 +12,8 @@ import {
   getCardSummary,
   getCardTransfer,
   getCustomerCard,
+  requestBulkRequests,
+  verifyAccount,
 } from "@/api/services/card";
 import { toast } from "sonner";
 
@@ -115,6 +117,24 @@ export function useGetCustomerCardMutation() {
   };
 }
 
+export function useGetCustomerVerificationMutation() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: ({ accountNumber }: { accountNumber: string }) =>
+      verifyAccount(accountNumber),
+    retry: false,
+    onError: (error: any) => {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
 export function useActivateCard() {
   const { mutate, data, error, isPending, isSuccess } = useMutation({
     mutationFn: activateCard,
@@ -242,6 +262,27 @@ export function useDeclineCardApproval() {
 
     onSuccess() {
       toast.success("Card block declined successful");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useRequestBulkCards() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: requestBulkRequests,
+
+    onSuccess() {
+      toast.success("Bulk card requested successful");
     },
     onError(error: any) {
       toast(error?.response?.data?.message);

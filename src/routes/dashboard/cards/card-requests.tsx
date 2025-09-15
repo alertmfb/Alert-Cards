@@ -1,16 +1,13 @@
 import CardRequestTable from "@/components/features/cards/CardRequests/CardRequestsTable";
 import CreateCardRequestPage from "@/components/features/cards/CardRequests/CreateCardRequest/CreateCardRequest";
+import { useAuth } from "@/hooks";
 import { useUserRolesStore } from "@/store/slices/useUserRolesStore";
 
 const CardRequests = () => {
-  const { userRole } = useUserRolesStore();
+  const { user } = useAuth();
   return (
     <div className="p-4">
-      {userRole === "initiator" ? (
-        <CreateCardRequestPage />
-      ) : (
-        <CardRequestTable />
-      )}
+      {user?.role === "CSO" ? <CreateCardRequestPage /> : <CardRequestTable />}
     </div>
   );
 };

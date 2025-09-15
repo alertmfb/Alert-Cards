@@ -6,6 +6,7 @@ import type {
   CardSummaryResponse,
   CardTransferResponse,
   CustomerCardResponse,
+  CustomerVerificationResponse,
 } from "@/types/card";
 
 export const getCardRequest = async (): Promise<CardResponse> => {
@@ -38,6 +39,15 @@ export const getCustomerCard = async (
 ): Promise<CustomerCardResponse> => {
   const res = await axiosInstance.get<CustomerCardResponse>(
     `/customers/card?accountNumber=${accountNumber}&type=${type}`
+  );
+  return res.data;
+};
+
+export const verifyAccount = async (
+  accountNumber: string
+): Promise<CustomerVerificationResponse> => {
+  const res = await axiosInstance.get<CustomerVerificationResponse>(
+    `/customers/verify?accountNumber=${accountNumber}`
   );
   return res.data;
 };
@@ -140,6 +150,37 @@ export const declinceBlockRequest = async (data: {
 }): Promise<any> => {
   try {
     const response = await axiosInstance.post<any>("/cards/block/reject", data);
+    return response.data;
+  } catch (error) {
+    console.error("Card block API error:", error);
+    throw error;
+  }
+};
+
+export const requestBulkRequests = async (data: {
+  requests: [
+    {
+      customerAccountNumber: string;
+      customerName: string;
+      customerPhoneNumber: string;
+      scheme: string;
+      variant: string;
+      nameOnCard: string;
+      requestType: string;
+      reissueReason: string;
+      pickUpBranchId: string;
+      channel: string;
+      requestDocumentUrl: string;
+      chargeWaive: boolean;
+      chargeWaiveReason: string;
+    }
+  ];
+}): Promise<any> => {
+  try {
+    const response = await axiosInstance.post<any>(
+      "/cards/requests/bulk",
+      data
+    );
     return response.data;
   } catch (error) {
     console.error("Card block API error:", error);

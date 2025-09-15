@@ -153,3 +153,28 @@ export interface CardActivationResponse {
   };
   message: string;
 }
+
+export interface CardDetails {
+  AccountNumber: string;
+  CardPAN: string;
+  LinkedDate: string;
+  ExpiryDate: string;
+  SerialNo: string;
+  NameOnCard: string;
+  Status: string;
+}
+
+export interface VerifiedCustomerData {
+  name: string;
+  phone: string;
+  email: string;
+  accountNumber: string;
+  accountBalance: number | string;
+  cards?: CardDetails[];
+}
+
+export interface CustomerVerificationResponse {
+  status: string;
+  data: VerifiedCustomerData;
+  message: string;
+}
