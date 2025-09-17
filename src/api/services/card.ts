@@ -170,3 +170,17 @@ export const requestBulkRequests = async (data: BulkRequest): Promise<any> => {
     throw error;
   }
 };
+
+export const uploadPin = async (data: any): Promise<any> => {
+  try {
+    const response = await axiosInstance.post<any>("/cards/pin/upload", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Card block API error:", error);
+    throw error;
+  }
+};

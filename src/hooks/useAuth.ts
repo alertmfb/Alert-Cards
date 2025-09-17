@@ -88,7 +88,11 @@ export const useAuth = () => {
         userFetchInitiated.current = true;
 
         toast.success("Login successful");
-        navigate("/", { replace: true });
+        if (userData?.role === "IT") {
+          navigate("/administration", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
       } catch (error) {
         setLoading(false);
         toast.error("Failed to get user profile");

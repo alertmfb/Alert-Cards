@@ -52,11 +52,13 @@ interface DocumentProps {
   title?: string;
   request?: boolean;
   setUploadedFile?: any;
+  accept?: string;
 }
 export function DocumentUpload({
   title = "Supporting Documents",
   request,
   setUploadedFile,
+  accept = ".jpg,.jpeg,.png,.pdf",
 }: DocumentProps) {
   const { draft, addDocument } = useCardRequestStore();
   const [isDragOver, setIsDragOver] = useState(false);
@@ -69,10 +71,20 @@ export function DocumentUpload({
       // Validate file type and size
       const maxSize = 5 * 1024 * 1024; // 5MB
       const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+      const excelAllowedTypes = ["text/csv"];
 
-      if (!allowedTypes.includes(file.type)) {
-        toast.error(`${file.name}: Only JPEG, PNG, and PDF files are allowed`);
-        return;
+      if (request) {
+        if (!allowedTypes.includes(file.type)) {
+          toast.error(
+            `${file.name}: Only JPEG, PNG, and PDF files are allowed`
+          );
+          return;
+        }
+      } else {
+        if (!excelAllowedTypes.includes(file.type)) {
+          toast.error(`${file.name}: Only CSV files are allowed`);
+          return;
+        }
       }
 
       if (file.size > maxSize) {
@@ -166,7 +178,7 @@ export function DocumentUpload({
           ref={fileInputRef}
           type="file"
           multiple
-          accept=".jpg,.jpeg,.png,.pdf"
+          accept={accept}
           onChange={(e) => handleFileSelect(e.target.files)}
           className="hidden"
         />

@@ -1,5 +1,9 @@
 import { CreditCard } from "lucide-react";
-import { IconCategoryFilled, IconUserShield } from "@tabler/icons-react";
+import {
+  IconCategoryFilled,
+  IconUpload,
+  IconUserShield,
+} from "@tabler/icons-react";
 
 export const navItems = [
   {
@@ -50,7 +54,6 @@ export const csoNavItems = [
         url: "/cards/activation-pin-reset",
       },
       { title: "Block/ Unblock Cards", url: "/cards/block-unblock-cards" },
-      { title: "Upload PIN", url: "/cards/upload-pin" },
     ],
   },
 ];
@@ -97,13 +100,9 @@ export const headNavItems = [
 
 export const itNavItems = [
   {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: IconCategoryFilled,
-  },
-  {
     title: "Administration",
     url: "/administration",
     icon: IconUserShield,
   },
+  { title: "Upload PIN", icon: IconUpload, url: "/cards/upload-pin" },
 ];
