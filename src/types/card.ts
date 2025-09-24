@@ -161,7 +161,7 @@ export interface CardDetails {
   ExpiryDate: string;
   SerialNo: string;
   NameOnCard: string;
-  Status: string;
+  Status: "Active" | "Blocked" | "Damaged" | "Lost" | "Stolen";
 }
 
 export interface VerifiedCustomerData {
