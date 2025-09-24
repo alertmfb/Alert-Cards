@@ -374,7 +374,7 @@ export default function CreateCardRequestStep2() {
 
                 <CardDetailsForm />
 
-                <DocumentUpload />
+                <DocumentUpload request />
 
                 <div className="flex justify-end items-end">
                   <Button

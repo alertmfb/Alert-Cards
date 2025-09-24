@@ -30,6 +30,7 @@ import BlockCard from "./dashboard/cards/card-services/blockCard";
 import UnblockCard from "./dashboard/cards/card-services/unblockCard";
 import Administration from "./dashboard/administration";
 import AccountSettings from "./dashboard/account-settings";
+import UploadPin from "./dashboard/cards/upoload-pin";
 
 export const router = createBrowserRouter([
   {
@@ -82,6 +83,7 @@ export const router = createBrowserRouter([
           { path: "cards/card-transfer", element: <CardTransfer /> },
           { path: "cards/block-unblock-cards", element: <BlockUnblockCards /> },
           { path: "cards/card-services/block-card", element: <BlockCard /> },
+          { path: "cards/upload-pin", element: <UploadPin /> },
           {
             path: "cards/card-services/unblock-card",
             element: <UnblockCard />,

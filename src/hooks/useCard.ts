@@ -13,6 +13,7 @@ import {
   getCardTransfer,
   getCustomerCard,
   requestBulkRequests,
+  uploadPin,
   verifyAccount,
 } from "@/api/services/card";
 import { toast } from "sonner";
@@ -283,6 +284,27 @@ export function useRequestBulkCards() {
 
     onSuccess() {
       toast.success("Bulk card requested successful");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useUploadPin() {
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: uploadPin,
+
+    onSuccess() {
+      toast.success("Pin uploaded successfully");
     },
     onError(error: any) {
       toast(error?.response?.data?.message);

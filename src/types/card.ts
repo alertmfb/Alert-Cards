@@ -161,7 +161,7 @@ export interface CardDetails {
   ExpiryDate: string;
   SerialNo: string;
   NameOnCard: string;
-  Status: string;
+  Status: "Active" | "Blocked" | "Damaged" | "Lost" | "Stolen";
 }
 
 export interface VerifiedCustomerData {
@@ -177,4 +177,24 @@ export interface CustomerVerificationResponse {
   status: string;
   data: VerifiedCustomerData;
   message: string;
+}
+
+export interface BulkCardRequest {
+  customerAccountNumber: string;
+  customerName: string;
+  customerPhoneNumber: string;
+  scheme: string;
+  variant: string;
+  nameOnCard: string;
+  requestType: string;
+  reissueReason: string;
+  pickUpBranchId: string;
+  channel: string;
+  requestDocumentUrl: string;
+  chargeWaive: boolean;
+  chargeWaiveReason: string;
+}
+
+export interface BulkRequest {
+  requests: BulkCardRequest[];
 }

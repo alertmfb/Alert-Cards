@@ -1,6 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import type {
   BlockCardResponse,
+  BulkRequest,
   CardActivationResponse,
   CardResponse,
   CardSummaryResponse,
@@ -157,30 +158,26 @@ export const declinceBlockRequest = async (data: {
   }
 };
 
-export const requestBulkRequests = async (data: {
-  requests: [
-    {
-      customerAccountNumber: string;
-      customerName: string;
-      customerPhoneNumber: string;
-      scheme: string;
-      variant: string;
-      nameOnCard: string;
-      requestType: string;
-      reissueReason: string;
-      pickUpBranchId: string;
-      channel: string;
-      requestDocumentUrl: string;
-      chargeWaive: boolean;
-      chargeWaiveReason: string;
-    }
-  ];
-}): Promise<any> => {
+export const requestBulkRequests = async (data: BulkRequest): Promise<any> => {
   try {
     const response = await axiosInstance.post<any>(
       "/cards/requests/bulk",
       data
     );
+    return response.data;
+  } catch (error) {
+    console.error("Card block API error:", error);
+    throw error;
+  }
+};
+
+export const uploadPin = async (data: any): Promise<any> => {
+  try {
+    const response = await axiosInstance.post<any>("/cards/pin/upload", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Card block API error:", error);

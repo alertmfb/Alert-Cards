@@ -28,7 +28,7 @@ export function WaiveChargeSwitch() {
   const savedReason = formData.reason ?? "";
 
   const handleSwitchChange = (checked: boolean) => {
-    if (checked) {
+    if (checked && !dialogOpen) {
       setDialogOpen(true);
     } else {
       if (formData.waiveCharges !== false || formData.reason !== "") {

@@ -21,19 +21,20 @@ export type CustomerDetails = {
   accountNumber: string;
   accountName: string;
   phone?: string;
-  accountBalanace?: string;
+  accountBalance?: string;
   name?: string;
   email?: string;
   cards?: CustomerCardDetails[];
 };
 export type CustomerCardDetails = {
+  id?: string | number;
   AccountNumber: string;
   CardPAN: string;
   LinkedDate: string;
   ExpiryDate: string;
   SerialNo: string;
   NameOnCard: string;
-  Status: string;
+  Status: "Active" | "Blocked" | "Damaged" | "Lost" | "Stolen";
 };
 
 export type CardRequest = {

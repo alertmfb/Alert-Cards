@@ -22,6 +22,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useRequestBulkCards } from "@/hooks";
+import type { BulkCardRequest, BulkRequest } from "@/types";
 
 export default function CardRequestSummary() {
   const navigate = useNavigate();
@@ -68,36 +69,33 @@ export default function CardRequestSummary() {
   console.log(requests);
   const handleSubmit = async () => {
     try {
-      // await submitRequestsAPI(requests); // 🔄 replace with real call
+      const modifyCardRequests: BulkCardRequest[] = requests?.map(
+        (request: CardRequest) => ({
+          customerAccountNumber: request?.customer?.accountNumber as string,
+          customerName: request?.customer?.accountName as string,
+          customerPhoneNumber: request?.customer?.phone as string,
+          scheme: request?.cardDetails?.scheme as string,
+          variant: request?.cardDetails?.variant as string,
+          nameOnCard: request?.cardDetails?.nameOnCard as string,
+          requestType: request?.cardDetails?.requestType as string,
+          reissueReason: request?.cardDetails?.reason as string,
+          pickUpBranchId: request?.cardDetails?.branch as string,
+          channel: request?.cardDetails?.channel as string,
+          requestDocumentUrl: "www.com",
+          chargeWaive: false,
+          chargeWaiveReason: "Testing",
+        })
+      );
 
-      // If you use SWR/React‑Query later, invalidate here:
-      // mutate("/api/requests");  // SWR
-      // queryClient.invalidateQueries("requests"); // React Query
-      const modifyCardRequests = requests?.map((request: CardRequest) => ({
-        customerAccountNumber: request?.customer?.accountNumber,
-        customerName: request?.customer?.accountName,
-        customerPhoneNumber: request?.customer?.phone,
-        scheme: request?.cardDetails?.scheme,
-        variant: request?.cardDetails?.variant,
-        nameOnCard: request?.cardDetails?.nameOnCard,
-        requestType: request?.cardDetails?.requestType,
-        reissueReason: request?.cardDetails?.reason,
-        pickUpBranchId: request?.cardDetails?.branch,
-        channel: request?.cardDetails?.channel,
-        requestDocumentUrl: "www.com",
-        chargeWaive: false,
-        chargeWaiveReason: "Testing",
-      }));
-
-      const payload = { requests: modifyCardRequests };
-      mutate(payload);
+      const body: { requests: BulkCardRequest[] } = {
+        requests: modifyCardRequests,
+      };
+      mutate(body);
       toast.success(
         `${requests.length} request${requests.length > 1 ? "s" : ""} submitted`
       );
     } catch (err) {
       toast.error("Failed to submit. Please try again.");
-    } finally {
-      // setIsSubmitting(false);
     }
   };
 
