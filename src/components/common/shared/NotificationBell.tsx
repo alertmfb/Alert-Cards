@@ -53,7 +53,13 @@ export default function NotificationBell() {
                   className="rounded-none border-0 border-b last:border-0 cursor-pointer"
                 >
                   <CardContent className="px-2 py-2 space-y-1">
-                    <p className="text-sm font-medium text-foreground/90">
+                    <p
+                      className={`text-sm font-medium ${
+                        notif?.readAt === null
+                          ? "text-foreground/90"
+                          : "text-foreground/30"
+                      } `}
+                    >
                       {notif.title}
                     </p>
                     <p className="text-sm text-muted-foreground leading-snug">
@@ -87,7 +93,13 @@ export default function NotificationBell() {
                       className="rounded-none border-0 border-b last:border-0 cursor-pointer"
                     >
                       <CardContent className="px-4 py-4 space-y-1">
-                        <p className="text-sm font-medium text-foreground/90">
+                        <p
+                          className={`text-sm font-medium ${
+                            notif?.readAt === null
+                              ? "text-foreground/90"
+                              : "text-foreground/30"
+                          } `}
+                        >
                           {notif.title}
                         </p>
                         <p className="text-sm text-muted-foreground leading-snug">
