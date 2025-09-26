@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   activateCard,
   activateCardApproval,
@@ -12,7 +12,9 @@ import {
   getCardSummary,
   getCardTransfer,
   getCustomerCard,
+  getNotifications,
   requestBulkRequests,
+  updateNotification,
   uploadPin,
   verifyAccount,
 } from "@/api/services/card";
@@ -305,6 +307,50 @@ export function useUploadPin() {
 
     onSuccess() {
       toast.success("Pin uploaded successfully");
+    },
+    onError(error: any) {
+      toast(error?.response?.data?.message);
+    },
+  });
+
+  return {
+    mutate,
+    data,
+    error,
+    isPending,
+    isSuccess,
+  };
+}
+
+export function useGetNotifications() {
+  const { data, error, isPending } = useQuery({
+    queryKey: ["notification"],
+    queryFn: () => getNotifications(),
+    retry: true,
+  });
+
+  if (error) {
+    // toast.error(error.message);
+    console.log(error);
+  }
+
+  return {
+    data,
+    error,
+    isPending,
+  };
+}
+
+export function useUpdateNotification() {
+  const queryClient = useQueryClient();
+  const { mutate, data, error, isPending, isSuccess } = useMutation({
+    mutationFn: updateNotification,
+
+    onSuccess() {
+      toast.success("Notification updated successful");
+      queryClient.invalidateQueries({
+        queryKey: ["notification"],
+      });
     },
     onError(error: any) {
       toast(error?.response?.data?.message);

@@ -198,3 +198,21 @@ export interface BulkCardRequest {
 export interface BulkRequest {
   requests: BulkCardRequest[];
 }
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  readAt: string | null;
+  createdAt: string;
+}
+
+export interface NotificationResponse {
+  data: Notification[];
+  pagination: {
+    total: number;
+    page: number;
+  };
+  message: string;
+  status: string;
+}
