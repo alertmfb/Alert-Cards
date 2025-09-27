@@ -46,7 +46,6 @@ export default function CreateCardRequestStep2() {
   const [openAnoter, setOpenAnother] = useState(true);
   const { mutate, data, isPending, isSuccess } =
     useGetCustomerVerificationMutation();
-  console.log(state?.customerData);
   // const draft = state?.customerData?.customerData;
   // Debounced account verification
   const verifyAccount = useCallback(
@@ -89,7 +88,7 @@ export default function CreateCardRequestStep2() {
     },
     [patchDraft]
   );
-  console.log(data?.data);
+
   // Debounce effect for account verification
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -101,7 +100,6 @@ export default function CreateCardRequestStep2() {
 
   // // Pre-seed account data from Step 1
   useMemo(() => {
-    console.log(state, "Pauloooo");
     if (state?.customerData?.accountNumber) {
       setAccountInput(state?.customerData?.accountNumber);
       setAccountName(state?.customerData?.name ?? "");
@@ -131,7 +129,6 @@ export default function CreateCardRequestStep2() {
     }, {});
   }, [requests]);
 
-  console.log(requests);
   const handleAddAnother = () => {
     if (requests.length >= MAX_REQUESTS) {
       toast.error(
