@@ -260,7 +260,7 @@ export default function CreateCardRequestStep2() {
         return "";
     }
   };
-  console.log(verificationStatus, "Remilekun");
+
   return (
     <>
       <PageHeader

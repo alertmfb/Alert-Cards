@@ -38,7 +38,6 @@ const CardRequestsTable = () => {
       dateRange,
     };
 
-    console.log("Exporting with filters:", payload);
     toast.success("✅ Export complete (simulated)");
   };
 

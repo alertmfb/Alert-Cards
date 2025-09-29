@@ -40,7 +40,6 @@ const CardTrackerTable = () => {
       dateRange,
     };
 
-    console.log("Exporting with filters:", payload);
     toast.success("✅ Export complete (simulated)");
   };
 

@@ -60,7 +60,7 @@ export function DocumentUpload({
   setUploadedFile,
   accept = ".jpg,.jpeg,.png,.pdf",
 }: DocumentProps) {
-  const { draft, addDocument } = useCardRequestStore();
+  const { draft, addDocument, removeDocument } = useCardRequestStore();
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
@@ -98,7 +98,7 @@ export function DocumentUpload({
         const base64String = reader.result as string;
         setUploadedFile(base64String);
       };
-      console.log(file);
+
       setSelectedFile(file);
       setUploadedFile(file);
       file;
@@ -125,9 +125,12 @@ export function DocumentUpload({
     handleFileSelect(e.dataTransfer.files);
   };
 
-  const removeDocument = (index: number) => {
-    // TODO: Implement remove document functionality in store
+  const handleRemoveDocument = (index: number) => {
     toast.success("Document removed");
+    // TODO: Implement remove document functionality in store
+    removeDocument(index);
+    setSelectedFile(null);
+    setUploadedFile(null);
   };
   console.log(selectedFile);
   return (
@@ -209,11 +212,12 @@ export function DocumentUpload({
                     variant="ghost"
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeDocument(index);
+                      handleRemoveDocument(index);
                     }}
                     className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
+                    sdd
                   </Button>
                 </div>
               ))}
@@ -242,6 +246,8 @@ export function DocumentUpload({
                       variant="ghost"
                       onClick={(e) => {
                         e.stopPropagation();
+                        setSelectedFile(null);
+                        setUploadedFile(null);
                       }}
                       className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                     >

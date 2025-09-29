@@ -247,7 +247,7 @@ export function CardDetailsForm() {
             </Select>
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="reason">Reason for Request</Label>
             <Select
               value={draft.cardDetails.reason ?? ""}
@@ -264,7 +264,7 @@ export function CardDetailsForm() {
                 ))}
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
 
           <div className="space-y-2">
             <Label htmlFor="branch">Pickup Branch</Label>
