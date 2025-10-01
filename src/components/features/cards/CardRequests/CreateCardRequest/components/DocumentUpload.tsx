@@ -1,39 +1,3 @@
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "components/ui/card";
-// import { Label } from "@/components/ui/label";
-// import { Button } from "components/ui/button";
-// import { CloudUpload } from "lucide-react";
-
-// export function DocumentUpload() {
-//   return (
-//     <Card>
-//       <CardHeader>
-//         <CardTitle>Customer Request Document</CardTitle>
-//         <CardDescription className="text-sm text-muted-foreground">
-//           Upload a document for the customer’s request.
-//         </CardDescription>
-//       </CardHeader>
-//       <CardContent className="space-y-4">
-//         <div className="border border-dashed rounded-lg p-6 text-center cursor-pointer transition hover:bg-muted/50">
-//           <div className="flex flex-col items-center justify-center space-y-2">
-//             <CloudUpload className="w-10 h-10 text-muted-foreground" />
-//             <p className="text-sm text-muted-foreground">
-//               Drag and drop file here or
-//             </p>
-//             <Button size="sm">Browse Files</Button>
-//           </div>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
-// components/DocumentUpload.tsx
 import { useState, useRef } from "react";
 import {
   Card,
@@ -127,7 +91,6 @@ export function DocumentUpload({
 
   const handleRemoveDocument = (index: number) => {
     toast.success("Document removed");
-    // TODO: Implement remove document functionality in store
     removeDocument(index);
     setSelectedFile(null);
     setUploadedFile(null);

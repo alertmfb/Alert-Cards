@@ -20,10 +20,7 @@ const UnblockCards = () => {
   });
 
   const handleExport = () => {
-    toast.info("📤 Exporting unblocked cards...");
-    console.log("Export Unblocked Cards with:", filters);
-    // TODO: Replace with export endpoint
-    toast.success("✅ Export complete (simulated)");
+    toast.success("Export functionality will be implemented soon");
   };
 
   const unBlockRequests = data?.data || [];
@@ -75,9 +72,6 @@ const UnblockCards = () => {
         </div>
       </div>
 
-      {/* TODO: Blocked cards table or list */}
-      {/* <div className="border rounded-md p-4 text-sm text-muted-foreground"> */}
-      {/* Blocked cards list will go here. */}
       {isPending ? (
         <TableLoader />
       ) : (
@@ -86,7 +80,6 @@ const UnblockCards = () => {
           columns={getCardActionColumns("block")}
         />
       )}
-      {/* </div> */}
     </div>
   );
 };

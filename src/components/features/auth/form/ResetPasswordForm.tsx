@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import {
   Form,
   FormField,
@@ -27,6 +28,7 @@ const schema = z
 
 export function ResetPasswordForm() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -35,12 +37,17 @@ export function ResetPasswordForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof schema>) {
-    toast.success("Password reset successfully.");
-    // TODO: call API to reset password
-    setTimeout(() => {
-      navigate("/sign-in");
-    }, 1000);
+  async function onSubmit(values: z.infer<typeof schema>) {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      toast.success("Password reset successfully!");
+      navigate("/auth/login");
+    } catch (error) {
+      toast.error("Failed to reset password. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Bell } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import {
   Popover,
   PopoverContent,

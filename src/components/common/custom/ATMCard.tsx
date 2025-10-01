@@ -1,6 +1,5 @@
 // components/ui/ATMCard.tsx
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib";
 
 export type CardScheme = "visa" | "mastercard" | "verve" | "american-express";

@@ -38,12 +38,9 @@ export function CardActivatePreviewCard({
 
     try {
       setIsSubmitting(true);
-
-      // TODO: Integrate card activation API here
-
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       toast.success("Card has been activated successfully!");
 
-      // Optional delay so user can see the toast before redirect
       setTimeout(() => {
         navigate("/");
       }, 1000);

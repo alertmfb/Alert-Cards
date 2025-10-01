@@ -76,7 +76,18 @@ export default function CreateCardRequestStep2() {
                 accountNumber: accountNumber.trim(),
                 accountName: data?.data?.name as string,
                 phone: data?.data?.phone as string, // TODO: Get from backend API
-                cards: data?.data?.cards,
+                cards: data?.data?.cards?.map((card) => ({
+                  id: card.SerialNo,
+                  accountNumber: card.AccountNumber,
+                  maskedPan: card.CardPAN,
+                  linkedDate: card.LinkedDate,
+                  expiryDate: card.ExpiryDate,
+                  serialNo: card.SerialNo,
+                  scheme: null,
+                  variant: null,
+                  nameOnCard: card.NameOnCard,
+                  status: card.Status,
+                })),
               },
             });
           }

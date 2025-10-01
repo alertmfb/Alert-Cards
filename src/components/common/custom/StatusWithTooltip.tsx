@@ -6,7 +6,6 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
-import type { CardActivationStatus } from "@/types";
 
 // ✅ Badge + tooltip component
 const StatusWithTooltip = ({ status }: { status: string }) => {

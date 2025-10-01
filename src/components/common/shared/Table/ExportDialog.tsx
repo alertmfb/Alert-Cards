@@ -10,14 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { DateRangePicker } from "@/components/common/shared/Table/DateRangePicker";
-import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import {
   Download,
   FileText,
-  Calendar,
-  CheckCircle,
   FileSpreadsheet,
   Database,
 } from "lucide-react";
@@ -81,7 +78,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
 
     try {
       // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => window.setTimeout(resolve, 2000));
 
       setOpen(false);
       onExport(dateRange, exportFormat);
