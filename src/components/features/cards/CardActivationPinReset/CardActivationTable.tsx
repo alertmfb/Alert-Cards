@@ -53,7 +53,7 @@ const CardActivationTable = () => {
 
   const handleExport = () => {
     toast.info("📦 Exporting filtered data...");
-    console.log("Export with filters:", filters);
+
     // TODO: Hook this up to real export logic
     toast.success("✅ Export complete (simulated)");
   };

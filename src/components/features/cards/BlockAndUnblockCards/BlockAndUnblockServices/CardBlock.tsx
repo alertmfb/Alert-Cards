@@ -84,9 +84,7 @@ export default function BlockCard() {
       return;
     }
 
-    // TODO: Integrate block card API endpoint here when available
     toast.success(`Card has been blocked successfully. Reason: ${blockReason}`);
-    // navigate("/dashboard");
   };
 
   const handleAccountNumberChange = (

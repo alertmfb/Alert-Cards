@@ -28,13 +28,15 @@ export type CustomerDetails = {
 };
 export type CustomerCardDetails = {
   id?: string | number;
-  AccountNumber: string;
-  CardPAN: string;
-  LinkedDate: string;
-  ExpiryDate: string;
-  SerialNo: string;
-  NameOnCard: string;
-  Status: "Active" | "Blocked" | "Damaged" | "Lost" | "Stolen";
+  accountNumber: string;
+  maskedPan: string;
+  linkedDate: string;
+  expiryDate: string;
+  serialNo: string;
+  scheme: null | string;
+  variant: null | string;
+  nameOnCard: string;
+  status: "Active" | "Blocked" | "Damaged" | "Lost" | "Stolen";
 };
 
 export type CardRequest = {

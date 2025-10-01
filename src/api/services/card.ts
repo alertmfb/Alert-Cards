@@ -8,6 +8,7 @@ import type {
   CardTransferResponse,
   CustomerCardResponse,
   CustomerVerificationResponse,
+  NotificationResponse,
 } from "@/types/card";
 
 export const getCardRequest = async (): Promise<CardResponse> => {
@@ -181,6 +182,25 @@ export const uploadPin = async (data: any): Promise<any> => {
     return response.data;
   } catch (error) {
     console.error("Card block API error:", error);
+    throw error;
+  }
+};
+
+export const getNotifications = async (): Promise<NotificationResponse> => {
+  const res = await axiosInstance.get(`notifications`);
+  return res.data;
+};
+
+export const updateNotification = async (
+  notificationId: string
+): Promise<NotificationResponse> => {
+  try {
+    const response = await axiosInstance.patch<any>(
+      `/notifications/read/${notificationId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Notification update API error:", error);
     throw error;
   }
 };

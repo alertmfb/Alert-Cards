@@ -12,7 +12,6 @@ import { ChevronFirst, ChevronLast } from "lucide-react";
 import {
   Table,
   TableBody,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,

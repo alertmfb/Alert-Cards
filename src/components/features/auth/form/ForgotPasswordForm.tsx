@@ -30,9 +30,7 @@ export function ForgotPasswordForm() {
 
   function onSubmit(values: z.infer<typeof schema>) {
     toast.success("Reset link sent to your email.");
-    /* TODO: call backend to send OTP email */
 
-    // pass the email to the OTP page via router state
     setTimeout(() => {
       navigate("/forgot-password-otp", { state: { email: values.email } });
     }, 800);

@@ -1,39 +1,3 @@
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "components/ui/card";
-// import { Label } from "@/components/ui/label";
-// import { Button } from "components/ui/button";
-// import { CloudUpload } from "lucide-react";
-
-// export function DocumentUpload() {
-//   return (
-//     <Card>
-//       <CardHeader>
-//         <CardTitle>Customer Request Document</CardTitle>
-//         <CardDescription className="text-sm text-muted-foreground">
-//           Upload a document for the customer’s request.
-//         </CardDescription>
-//       </CardHeader>
-//       <CardContent className="space-y-4">
-//         <div className="border border-dashed rounded-lg p-6 text-center cursor-pointer transition hover:bg-muted/50">
-//           <div className="flex flex-col items-center justify-center space-y-2">
-//             <CloudUpload className="w-10 h-10 text-muted-foreground" />
-//             <p className="text-sm text-muted-foreground">
-//               Drag and drop file here or
-//             </p>
-//             <Button size="sm">Browse Files</Button>
-//           </div>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
-// components/DocumentUpload.tsx
 import { useState, useRef } from "react";
 import {
   Card,
@@ -60,7 +24,7 @@ export function DocumentUpload({
   setUploadedFile,
   accept = ".jpg,.jpeg,.png,.pdf",
 }: DocumentProps) {
-  const { draft, addDocument } = useCardRequestStore();
+  const { draft, addDocument, removeDocument } = useCardRequestStore();
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<null | File>(null);
@@ -98,7 +62,7 @@ export function DocumentUpload({
         const base64String = reader.result as string;
         setUploadedFile(base64String);
       };
-      console.log(file);
+
       setSelectedFile(file);
       setUploadedFile(file);
       file;
@@ -125,9 +89,11 @@ export function DocumentUpload({
     handleFileSelect(e.dataTransfer.files);
   };
 
-  const removeDocument = (index: number) => {
-    // TODO: Implement remove document functionality in store
+  const handleRemoveDocument = (index: number) => {
     toast.success("Document removed");
+    removeDocument(index);
+    setSelectedFile(null);
+    setUploadedFile(null);
   };
   console.log(selectedFile);
   return (
@@ -209,11 +175,12 @@ export function DocumentUpload({
                     variant="ghost"
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeDocument(index);
+                      handleRemoveDocument(index);
                     }}
                     className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
+                    sdd
                   </Button>
                 </div>
               ))}
@@ -242,6 +209,8 @@ export function DocumentUpload({
                       variant="ghost"
                       onClick={(e) => {
                         e.stopPropagation();
+                        setSelectedFile(null);
+                        setUploadedFile(null);
                       }}
                       className="h-8 w-8 p-0 text-destructive hover:text-destructive"
                     >

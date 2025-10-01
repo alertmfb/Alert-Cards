@@ -247,6 +247,7 @@ export const cardVariant: Options[] = [
   },
   { id: 2, label: "Alert Platinum", value: "ALERT_PLATINUM" },
   { id: 3, label: "Alert Luxe", value: "ALERT_LUXE" },
+  { id: 4, label: "Alert Potrait", value: "ALERT_POTRAIT" },
 ];
 
 export const requestType: Options[] = [

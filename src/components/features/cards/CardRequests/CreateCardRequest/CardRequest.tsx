@@ -46,7 +46,6 @@ export default function CreateCardRequestStep2() {
   const [openAnoter, setOpenAnother] = useState(true);
   const { mutate, data, isPending, isSuccess } =
     useGetCustomerVerificationMutation();
-  console.log(state?.customerData);
   // const draft = state?.customerData?.customerData;
   // Debounced account verification
   const verifyAccount = useCallback(
@@ -77,7 +76,18 @@ export default function CreateCardRequestStep2() {
                 accountNumber: accountNumber.trim(),
                 accountName: data?.data?.name as string,
                 phone: data?.data?.phone as string, // TODO: Get from backend API
-                cards: data?.data?.cards,
+                cards: data?.data?.cards?.map((card) => ({
+                  id: card.SerialNo,
+                  accountNumber: card.AccountNumber,
+                  maskedPan: card.CardPAN,
+                  linkedDate: card.LinkedDate,
+                  expiryDate: card.ExpiryDate,
+                  serialNo: card.SerialNo,
+                  scheme: null,
+                  variant: null,
+                  nameOnCard: card.NameOnCard,
+                  status: card.Status,
+                })),
               },
             });
           }
@@ -89,7 +99,7 @@ export default function CreateCardRequestStep2() {
     },
     [patchDraft]
   );
-  console.log(data?.data);
+
   // Debounce effect for account verification
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -101,7 +111,6 @@ export default function CreateCardRequestStep2() {
 
   // // Pre-seed account data from Step 1
   useMemo(() => {
-    console.log(state, "Pauloooo");
     if (state?.customerData?.accountNumber) {
       setAccountInput(state?.customerData?.accountNumber);
       setAccountName(state?.customerData?.name ?? "");
@@ -131,7 +140,6 @@ export default function CreateCardRequestStep2() {
     }, {});
   }, [requests]);
 
-  console.log(requests);
   const handleAddAnother = () => {
     if (requests.length >= MAX_REQUESTS) {
       toast.error(
@@ -263,7 +271,7 @@ export default function CreateCardRequestStep2() {
         return "";
     }
   };
-  console.log(verificationStatus, "Remilekun");
+
   return (
     <>
       <PageHeader
